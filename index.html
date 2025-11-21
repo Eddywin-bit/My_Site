@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edwin Gyasi | Creative Director</title>
     
-    <!-- Icons -->
+    <!-- Icons (CDN fallback, but we use SVG mostly) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
@@ -17,112 +17,141 @@
             --text-secondary: #aaa;
             --accent-color: #D4AF37; /* Gold */
             --nav-height: 80px;
+            --ease-premium: cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         /* --- 2. RESET --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; /* Hide default cursor for custom one */ }
+        
+        /* Restore default cursor on mobile since they don't have mice */
+        @media (hover: none) { * { cursor: auto; } }
+
         body { background: var(--bg-color); color: var(--text-primary); font-family: 'Inter', sans-serif; overflow-x: hidden; }
         img { width: 100%; display: block; border-radius: 8px; }
-        a { cursor: pointer; text-decoration: none; transition: 0.3s; color: inherit; }
+        a { text-decoration: none; transition: 0.3s; color: inherit; }
 
-        /* --- 3. NAVIGATION --- */
+        /* --- 3. PRELOADER (New) --- */
+        .preloader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center;
+            transition: transform 0.8s var(--ease-premium);
+        }
+        .preloader-text {
+            font-size: 2rem; font-weight: 800; letter-spacing: 5px; color: var(--accent-color);
+            animation: pulse 1.5s infinite;
+        }
+        .preloader.hide { transform: translateY(-100%); }
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+
+        /* --- 4. CUSTOM CURSOR (New) --- */
+        .cursor-dot, .cursor-outline {
+            position: fixed; top: 0; left: 0; transform: translate(-50%, -50%);
+            border-radius: 50%; z-index: 9998; pointer-events: none;
+            display: none; /* Hidden on mobile */
+        }
+        @media (hover: hover) { 
+            .cursor-dot { width: 8px; height: 8px; background: var(--accent-color); display: block; }
+            .cursor-outline { width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.5); display: block; transition: width 0.2s, height 0.2s, background-color 0.2s; }
+            
+            /* Hover State */
+            body.hovering .cursor-outline { width: 60px; height: 60px; background: rgba(255,255,255,0.1); border-color: transparent; }
+        }
+
+        /* --- 5. SCROLL REVEAL --- */
+        .reveal { opacity: 0; transform: translateY(50px); transition: all 1s var(--ease-premium); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* --- 6. NAVIGATION --- */
         .navbar {
             position: fixed; top: 0; width: 100%; height: var(--nav-height);
             background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(10px);
             display: flex; justify-content: space-between; align-items: center;
             padding: 0 5%; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-        
         .logo-img { height: 50px; width: auto; object-fit: contain; }
-
         .nav-links { display: flex; gap: 30px; list-style: none; }
         .nav-links a { color: var(--text-secondary); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
         .nav-links a:hover { color: var(--text-primary); }
 
-        /* --- 4. PAGE SYSTEM --- */
-        .page-section { display: none; padding-top: 100px; min-height: 100vh; animation: fadeIn 0.4s; }
+        /* --- 7. PAGE SYSTEM --- */
+        .page-section { display: none; padding-top: 100px; min-height: 100vh; }
         #home-page { display: block; } 
-        
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- 5. HOMEPAGE STYLES --- */
+        /* --- 8. BACK TO TOP BUTTON (New) --- */
+        .to-top {
+            position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px;
+            background: var(--accent-color); color: #000; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; font-size: 1.5rem;
+            z-index: 900; cursor: pointer; opacity: 0; pointer-events: none; transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .to-top.visible { opacity: 1; pointer-events: all; }
+        .to-top:hover { transform: translateY(-5px); }
+
+        /* --- 9. HOMEPAGE STYLES --- */
         .hero-container { display: flex; align-items: center; min-height: 80vh; padding: 0 5%; max-width: 1400px; margin: 0 auto; }
         .hero-text { flex: 1; padding-right: 50px; }
         .hero-text h1 { font-size: clamp(3rem, 6vw, 5.5rem); line-height: 1.1; margin-bottom: 20px; }
         .hero-image { flex: 1; }
         
-        /* Featured Works */
+        /* Premium Project Cards */
         .section-title { font-size: 2.5rem; margin-bottom: 60px; text-align: center; }
         .featured-wrapper { max-width: 1200px; margin: 100px auto; padding: 0 5%; }
         
         .project-card { display: flex; gap: 50px; margin-bottom: 120px; align-items: center; }
         .project-card:nth-child(even) { flex-direction: row-reverse; }
-        .p-img { flex: 1.2; transition: transform 0.3s; cursor: pointer; }
-        .p-img:hover { transform: scale(1.02); }
+        
+        .p-img { flex: 1.2; overflow: hidden; border-radius: 12px; }
+        .p-img img { transition: transform 0.6s var(--ease-premium); width: 100%; }
+        .project-card:hover .p-img img { transform: scale(1.05); }
+        
         .p-info { flex: 1; }
         .p-cat { color: var(--accent-color); text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; margin-bottom: 10px; display: block; }
         .p-title { font-size: 2.2rem; margin-bottom: 20px; line-height: 1.1; }
         
-        /* Buttons */
-        .btn { padding: 12px 30px; background: var(--accent-color); color: #000; border-radius: 30px; font-weight: 700; display: inline-block; }
-        .btn:hover { background: #fff; }
-        .btn-outline { border: 1px solid #fff; background: transparent; color: #fff; margin-top: 20px; }
-        .btn-outline:hover { background: #fff; color: #000; }
+        .btn { padding: 12px 30px; background: var(--accent-color); color: #000; border-radius: 30px; font-weight: 700; display: inline-block; transition: 0.3s; }
+        .btn:hover { background: #fff; transform: translateY(-2px); }
+        
+        .btn-outline { border: 1px solid rgba(255,255,255,0.3); background: transparent; color: #fff; margin-top: 20px; transition: all 0.3s ease; }
+        .project-card:hover .btn-outline { background: #fff; color: #000; border-color: #fff; }
 
-        /* --- 6. MASONRY GALLERY --- */
+        /* --- 10. MASONRY GALLERY --- */
         .filter-bar { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 40px; }
-        .filter-btn { 
-            background: transparent; border: 1px solid #333; color: #888; 
-            padding: 8px 20px; border-radius: 20px; cursor: pointer; text-transform: uppercase; font-size: 0.75rem; 
-        }
+        .filter-btn { background: transparent; border: 1px solid #333; color: #888; padding: 8px 20px; border-radius: 20px; font-size: 0.75rem; }
         .filter-btn.active, .filter-btn:hover { border-color: var(--accent-color); color: #fff; }
 
         .masonry-grid { column-count: 4; column-gap: 20px; padding: 0 5% 100px; }
-        .masonry-item { break-inside: avoid; margin-bottom: 20px; position: relative; display: block; cursor: zoom-in; }
+        .masonry-item { break-inside: avoid; margin-bottom: 20px; position: relative; display: block; }
         .masonry-item img { width: 100%; transition: 0.3s; }
         .masonry-item:hover img { opacity: 0.8; transform: scale(1.02); }
         
-        /* --- 7. LIGHTBOX (POP-UP IMAGE) --- */
+        /* --- 11. LIGHTBOX --- */
         .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 5000; justify-content: center; align-items: center; backdrop-filter: blur(5px); padding: 20px; }
         .lightbox img { max-width: 100%; max-height: 90vh; object-fit: contain; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
         .close-lightbox { position: absolute; top: 20px; right: 30px; font-size: 40px; color: #fff; cursor: pointer; }
 
-        /* --- 8. CASE STUDY PAGE STYLES --- */
+        /* --- 12. CASE STUDY STYLES --- */
         .case-hero { text-align: center; padding: 50px 5%; }
         .case-hero h1 { font-size: 3.5rem; margin-bottom: 20px; }
         .case-meta { display: flex; justify-content: center; gap: 40px; color: var(--accent-color); margin-bottom: 50px; text-transform: uppercase; letter-spacing: 1px; }
         .case-content { max-width: 800px; margin: 0 auto 80px; font-size: 1.2rem; color: #ccc; line-height: 1.8; text-align: center; }
         .case-gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 0 5% 100px; }
-
-        /* --- NEW: DESKTOP BACK BUTTON --- */
-        /* This button shows on PC but hides on Mobile */
-        .back-btn { 
-            cursor: pointer; color: var(--text-secondary); display: inline-block; 
-            margin-bottom: 20px; font-size: 0.9rem; transition: 0.3s;
-        }
+        .back-btn { color: var(--text-secondary); display: inline-block; margin-bottom: 20px; font-size: 0.9rem; transition: 0.3s; }
         .back-btn:hover { color: #fff; transform: translateX(-5px); }
 
-        /* --- 9. FOOTER --- */
-        footer { text-align: center; padding: 80px 5%; border-top: 1px solid #222; background: #000; }
-        .social-row { display: flex; justify-content: center; gap: 20px; margin: 30px 0; }
-        .social-icon-btn { width: 50px; height: 50px; border-radius: 50%; border: 1px solid #333; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #fff; transition: 0.3s; }
-        .social-icon-btn:hover { background: var(--accent-color); color: #000; border-color: var(--accent-color); }
+        /* --- 13. FOOTER --- */
+        footer { text-align: center; padding: 100px 5% 50px; border-top: 1px solid #222; background: #000; }
+        .footer-title { font-size: clamp(3rem, 8vw, 8rem); font-weight: 800; line-height: 1; margin-bottom: 40px; letter-spacing: -2px; background: linear-gradient(to right, #fff, #666); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .social-row { display: flex; justify-content: center; gap: 20px; margin: 40px 0; }
+        .social-icon-btn { width: 60px; height: 60px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #fff; transition: 0.3s; }
+        .social-icon-btn:hover { background: var(--accent-color); color: #000; border-color: var(--accent-color); transform: scale(1.1); }
         .email-link { font-size: 1.1rem; color: #888; border-bottom: 1px solid #333; padding-bottom: 5px; display: inline-block; }
 
-        /* RESPONSIVE (MOBILE FIXES) */
+        /* RESPONSIVE (MOBILE) */
         @media (max-width: 768px) {
             .nav-links { display: none; }
-            
-            /* HIDE THE BACK BUTTON ON MOBILE (App Feel) */
             .back-btn { display: none !important; }
-
-            /* REDUCED FONTS FOR MOBILE */
             .hero-text h1 { font-size: 2.5rem; line-height: 1.2; } 
-            .hero-text p { font-size: 1rem; }
-            .section-title { font-size: 2rem; }
-            .p-title { font-size: 1.8rem; }
-            .case-hero h1 { font-size: 2.2rem; }
-            
             .hero-container { flex-direction: column-reverse; text-align: center; padding-top: 40px; }
             .hero-text { padding-right: 0; }
             .project-card, .project-card:nth-child(even) { flex-direction: column; gap: 30px; margin-bottom: 80px; }
@@ -134,21 +163,39 @@
 </head>
 <body>
 
-    <!-- LIGHTBOX OVERLAY -->
+    <!-- 1. PRELOADER -->
+    <div class="preloader" id="preloader">
+        <div class="preloader-text">CEO GYASI</div>
+    </div>
+
+    <!-- 2. CUSTOM CURSOR (Desktop Only) -->
+    <div class="cursor-dot" data-cursor-dot></div>
+    <div class="cursor-outline" data-cursor-outline></div>
+
+    <!-- 3. LIGHTBOX OVERLAY -->
     <div id="lightbox" class="lightbox" onclick="closeLightbox()">
         <span class="close-lightbox">&times;</span>
         <img id="lightbox-img" src="" alt="Full Screen View">
     </div>
 
+    <!-- 4. BACK TO TOP BUTTON (SVG FIXED) -->
+<div class="to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+    <!-- This draws a black arrow directly -->
+    <svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 384 512" fill="#000000">
+        <path d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2V448c0 17.7 14.3 32 32 32s32-14.3 32-32V141.2L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"/>
+    </svg>
+</div>
+
     <!-- NAVIGATION -->
     <nav class="navbar">
         <div class="logo" onclick="navigateTo('home-page')" style="cursor:pointer;">
-            <img src="Assets/logo.png" alt="Edwin Gyasi" class="logo-img">
+            <!-- Replace with your logo -->
+            <img src="Assets/logo.png" alt="Edwin Gyasi" class="logo-img" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">
         </div>
         <ul class="nav-links">
-            <li><a onclick="navigateTo('home-page')">Home</a></li>
-            <li><a onclick="navigateTo('full-gallery')">The Vault</a></li>
-            <li><a href="#footer">Contact</a></li>
+            <li><a onclick="navigateTo('home-page')" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">Home</a></li>
+            <li><a onclick="navigateTo('full-gallery')" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">The Vault</a></li>
+            <li><a href="#footer" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">Contact</a></li>
         </ul>
     </nav>
 
@@ -156,81 +203,75 @@
     <!-- PAGE 1: HOME                                          -->
     <!-- ===================================================== -->
     <div id="home-page" class="page-section">
-        <div class="hero-container">
+        
+        <div class="hero-container reveal">
             <div class="hero-text">
                 <span style="color: var(--accent-color); letter-spacing: 2px; font-size: 0.9rem; font-weight: 700;">CREATIVE DIRECTOR</span>
                 <h1>Hello,<br>I'm <span style="color: var(--accent-color);">Edwin.</span></h1>
                 <p style="color: #aaa; max-width: 500px; margin-bottom: 30px;">Helping brands dominate their market through high-end design and strategic storytelling.</p>
-                <a onclick="navigateTo('full-gallery')" class="btn">View Full Archive</a>
+                <a onclick="navigateTo('full-gallery')" class="btn" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">View Full Archive</a>
             </div>
             <div class="hero-image">
                 <img src="Assets/1000007946.png" alt="CEO Gyasi" style="max-height: 600px; object-fit: contain;">
             </div>
         </div>
 
-        <!-- FEATURED WORKS -->
         <div class="featured-wrapper">
-            <h2 class="section-title">Featured Works</h2>
+            <h2 class="section-title reveal">Featured Works</h2>
 
-            <!-- Project 1 -->
-            <div class="project-card">
+            <div class="project-card reveal" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">
                 <div class="p-img" onclick="navigateTo('case-study-burger')">
-                    <img src="Assets/burger.png" alt="Burger">
+                    <img src="Assets/burger.png">
                 </div>
                 <div class="p-info">
                     <span class="p-cat">Commercial Marketing</span>
                     <h3 class="p-title">Spicy Burger Campaign</h3>
-                    <p style="color:#888; margin-bottom: 20px;">A 360-degree rollout for a fast-food chain. Increased weekend sales by 30% through bold visuals.</p>
+                    <p style="color:#888; margin-bottom: 20px;">A 360-degree rollout for a fast-food chain.</p>
                     <a onclick="navigateTo('case-study-burger')" class="btn btn-outline">View Case Study</a>
                 </div>
             </div>
 
-            <!-- Project 2 -->
-            <div class="project-card">
+            <div class="project-card reveal" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">
                 <div class="p-img" onclick="navigateTo('case-study-knust')">
-                    <img src="Assets/GESS SEMINAR.jpg" alt="KNUST">
+                    <img src="Assets/GESS SEMINAR.jpg">
                 </div>
                 <div class="p-info">
                     <span class="p-cat">Academic Branding</span>
                     <h3 class="p-title">KNUST Engineering Seminar</h3>
-                    <p style="color:#888; margin-bottom: 20px;">Complete identity design for the annual summit. Brochures, banners, and digital assets.</p>
+                    <p style="color:#888; margin-bottom: 20px;">Complete identity design for the annual summit.</p>
                     <a onclick="navigateTo('case-study-knust')" class="btn btn-outline">View Case Study</a>
                 </div>
             </div>
 
-            <!-- Project 3 -->
-            <div class="project-card">
+            <div class="project-card reveal" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">
                 <div class="p-img" onclick="navigateTo('case-study-summit')">
-                    <img src="Assets/church 2.jpg" alt="Church">
+                    <img src="Assets/church 2.jpg">
                 </div>
                 <div class="p-info">
                     <span class="p-cat">Event Design</span>
                     <h3 class="p-title">Church Youth Summit</h3>
-                    <p style="color:#888; margin-bottom: 20px;">Merchandise and stage design for a 3-day conference. Creating an energetic atmosphere.</p>
+                    <p style="color:#888; margin-bottom: 20px;">Merchandise and stage design for a 3-day conference.</p>
                     <a onclick="navigateTo('case-study-summit')" class="btn btn-outline">View Case Study</a>
                 </div>
             </div>
         </div>
 
-        <!-- GALLERY TEASER -->
-        <div style="background: #111; padding: 80px 5%; text-align: center;">
+        <div class="reveal" style="background: #111; padding: 80px 5%; text-align: center;">
             <h2>The Archive</h2>
             <p style="color: #888; margin-bottom: 30px;">Explore 50+ Flyers, Brands, and Designs.</p>
-            <a onclick="navigateTo('full-gallery')" class="btn">Open The Vault</a>
+            <a onclick="navigateTo('full-gallery')" class="btn" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">Open The Vault</a>
         </div>
     </div>
 
     <!-- ===================================================== -->
-    <!-- PAGE 2: THE VAULT (Gallery)                           -->
+    <!-- PAGE 2: THE VAULT                                     -->
     <!-- ===================================================== -->
     <div id="full-gallery" class="page-section">
         <div style="text-align: center; margin-bottom: 50px;">
-            <!-- BACK BUTTON: VISIBLE ON PC, HIDDEN ON MOBILE -->
             <span class="back-btn" onclick="navigateTo('home-page')">&larr; Back Home</span>
             <h1 style="font-size: 3rem;">The Vault</h1>
         </div>
 
-        <!-- FILTERS -->
         <div class="filter-bar">
             <button class="filter-btn active" onclick="filterSelection('all')">ALL</button>
             <button class="filter-btn" onclick="filterSelection('commercial')">COMMERCIAL</button>
@@ -239,43 +280,33 @@
             <button class="filter-btn" onclick="filterSelection('merch')">MERCH</button>
         </div>
 
-        <!-- MASONRY GRID -->
+        <!-- MASONRY GRID (PASTE IMAGES HERE) -->
         <div class="masonry-grid">
-            <div class="masonry-item commercial" onclick="openLightbox(this.querySelector('img').src)">
-                <img src="Assets/food.jpg">
+            <div class="masonry-item commercial reveal" onclick="openLightbox(this.querySelector('img').src)" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">
+                <img src="Assets/beauty-poster.jpg" loading="lazy">
             </div>
-            <div class="masonry-item church" onclick="openLightbox(this.querySelector('img').src)">
-                <img src="Assets/Church Hand Over.png">
+            <div class="masonry-item church reveal" onclick="openLightbox(this.querySelector('img').src)" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">
+                <img src="Assets/Church Hand Over.png" loading="lazy">
             </div>
-            <div class="masonry-item academic" onclick="openLightbox(this.querySelector('img').src)">
-                <img src="Assets/Academic 1.png">
+            <div class="masonry-item academic reveal" onclick="openLightbox(this.querySelector('img').src)" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">
+                <img src="Assets/Academic 1.png" loading="lazy">
             </div>
-            <div class="masonry-item merch" onclick="openLightbox(this.querySelector('img').src)">
-                <img src="Assets/Shopping Bag.jpg">
+            <div class="masonry-item merch reveal" onclick="openLightbox(this.querySelector('img').src)" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">
+                <img src="Assets/Shopping Bag.jpg" loading="lazy">
             </div>
         </div>
     </div>
 
     <!-- ===================================================== -->
-    <!-- PAGE 3: CASE STUDY - BURGER                           -->
+    <!-- PAGE 3: CASE STUDIES                                  -->
     <!-- ===================================================== -->
     <div id="case-study-burger" class="page-section">
         <div style="padding: 0 5%;">
-            <!-- BACK BUTTON: VISIBLE ON PC, HIDDEN ON MOBILE -->
             <span class="back-btn" onclick="navigateTo('home-page')">&larr; Back to Featured</span>
-            
             <div class="case-hero">
                 <h1>Spicy Burger Campaign</h1>
-                <div class="case-meta">
-                    <span>Client: Burger King GH</span>
-                    <span>Role: Creative Lead</span>
-                    <span>Year: 2024</span>
-                </div>
-                <p class="case-content">
-                    The goal was simple: Make the new spicy burger look so good it's impossible to ignore. 
-                    We used warm lighting, "sweat" droplets on the soda cans, and dynamic angles to create 
-                    a sense of movement and heat.
-                </p>
+                <div class="case-meta"><span>Client: Burger King GH</span><span>Role: Creative Lead</span><span>Year: 2024</span></div>
+                <p class="case-content">The goal was simple: Make the new spicy burger look so good it's impossible to ignore.</p>
             </div>
             <div class="case-gallery">
                 <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=1000" onclick="openLightbox(this.src)">
@@ -284,24 +315,10 @@
         </div>
     </div>
 
-    <!-- ===================================================== -->
-    <!-- PAGE 4: CASE STUDY - KNUST                            -->
-    <!-- ===================================================== -->
     <div id="case-study-knust" class="page-section">
         <div style="padding: 0 5%;">
             <span class="back-btn" onclick="navigateTo('home-page')">&larr; Back to Featured</span>
-            <div class="case-hero">
-                <h1>KNUST Engineering Seminar</h1>
-                <div class="case-meta">
-                    <span>Client: KNUST</span>
-                    <span>Role: Brand Designer</span>
-                    <span>Year: 2023</span>
-                </div>
-                <p class="case-content">
-                    Engineering is about precision. I moved away from chaotic layouts and used a grid-based 
-                    Swiss design style. The blue and white palette reflects trust and technology.
-                </p>
-            </div>
+            <div class="case-hero"><h1>KNUST Engineering Seminar</h1><p class="case-content">Engineering is about precision.</p></div>
             <div class="case-gallery">
                 <img src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?q=80&w=1000" onclick="openLightbox(this.src)">
                 <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=1000" onclick="openLightbox(this.src)">
@@ -309,24 +326,10 @@
         </div>
     </div>
 
-    <!-- ===================================================== -->
-    <!-- PAGE 5: CASE STUDY - SUMMIT                           -->
-    <!-- ===================================================== -->
     <div id="case-study-summit" class="page-section">
         <div style="padding: 0 5%;">
             <span class="back-btn" onclick="navigateTo('home-page')">&larr; Back to Featured</span>
-            <div class="case-hero">
-                <h1>Youth Summit 2024</h1>
-                <div class="case-meta">
-                    <span>Client: Grace Chapel</span>
-                    <span>Role: Art Director</span>
-                    <span>Year: 2024</span>
-                </div>
-                <p class="case-content">
-                    We wanted the youth to feel excited about church. The design language was loud, colorful, 
-                    and heavily inspired by streetwear culture.
-                </p>
-            </div>
+            <div class="case-hero"><h1>Youth Summit 2024</h1><p class="case-content">We wanted the youth to feel excited.</p></div>
             <div class="case-gallery">
                 <img src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=1000" onclick="openLightbox(this.src)">
                 <img src="https://images.unsplash.com/photo-1459749411177-29432ca9f264?q=80&w=1000" onclick="openLightbox(this.src)">
@@ -336,65 +339,90 @@
 
     <!-- FOOTER -->
     <footer id="footer">
-        <h2 style="font-size: 2rem; margin-bottom: 10px;">Let's Create Impact.</h2>
-        <p style="color: #888;">Available for freelance projects.</p>
+        <h2 class="footer-title reveal">Let's Create Impact.</h2>
+        <p style="color: #888; font-size: 1.2rem;">Available for freelance projects.</p>
         
-        <div class="social-row">
-            <a href="https://www.linkedin.com/in/edwin-gyasi" target="_blank" class="social-icon-btn" aria-label="LinkedIn">
-                <svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 448 512" fill="currentColor"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
-            </a>
-            <a href="mailto:ogstudios14@gmail.com" class="social-icon-btn" aria-label="Email">
-                <svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 512 512" fill="currentColor"><path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/></svg>
-            </a>
-            <a href="#" class="social-icon-btn" aria-label="Instagram">
-                <svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 448 512" fill="currentColor"><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.5 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.9 0-184.9zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/></svg>
-            </a>
-            <a href="#" class="social-icon-btn" aria-label="Twitter">
-                <svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 512 512" fill="currentColor"><path d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"/></svg>
-            </a>
+        <div class="social-row reveal">
+            <a href="https://www.linkedin.com/in/edwin-gyasi" target="_blank" class="social-icon-btn" onmouseenter="cursorHover()" onmouseleave="cursorLeave()"><svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 448 512" fill="currentColor"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg></a>
+            <a href="mailto:ogstudios14@gmail.com" class="social-icon-btn" onmouseenter="cursorHover()" onmouseleave="cursorLeave()"><svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 512 512" fill="currentColor"><path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/></svg></a>
+            <a href="#" class="social-icon-btn" onmouseenter="cursorHover()" onmouseleave="cursorLeave()"><svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 448 512" fill="currentColor"><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.5 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.9 0-184.9zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/></svg></a>
+            <a href="#" class="social-icon-btn" onmouseenter="cursorHover()" onmouseleave="cursorLeave()"><svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 512 512" fill="currentColor"><path d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"/></svg></a>
         </div>
         
         <a href="mailto:ogstudios14@gmail.com" class="email-link">ogstudios14@gmail.com</a>
         <p style="margin-top: 30px; font-size: 0.8rem; color: #444;">&copy; 2025 CEO Gyasi. All Rights Reserved.</p>
     </footer>
 
+    <!-- JAVASCRIPT ENGINE -->
     <script>
-        // PAGE SWITCHER WITH HISTORY
+        // 1. CUSTOM CURSOR LOGIC
+        const cursorDot = document.querySelector('[data-cursor-dot]');
+        const cursorOutline = document.querySelector('[data-cursor-outline]');
+
+        window.addEventListener('mousemove', function(e) {
+            const posX = e.clientX;
+            const posY = e.clientY;
+            
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
+            
+            // Add delay for trailing effect
+            cursorOutline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
+        });
+
+        function cursorHover() { document.body.classList.add('hovering'); }
+        function cursorLeave() { document.body.classList.remove('hovering'); }
+
+        // 2. PRELOADER
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('preloader').classList.add('hide');
+            }, 1500); // 1.5s delay
+        });
+
+        // 3. SCROLL OBSERVER
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('active');
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // 4. BACK TO TOP
+        window.addEventListener('scroll', function() {
+            const btn = document.querySelector('.to-top');
+            if(window.scrollY > 500) btn.classList.add('visible');
+            else btn.classList.remove('visible');
+        });
+
+        // 5. NAVIGATION (Standard + History)
         function navigateTo(pageId) {
             history.pushState({page: pageId}, "", "#" + pageId);
             showPage(pageId);
         }
-
         function showPage(pageId) {
             document.querySelectorAll('.page-section').forEach(p => p.style.display = 'none');
             const activePage = document.getElementById(pageId) || document.getElementById('home-page');
             activePage.style.display = 'block';
             window.scrollTo(0, 0);
         }
-
         window.addEventListener('popstate', function(event) {
-            if (event.state && event.state.page) {
-                showPage(event.state.page);
-            } else {
-                showPage('home-page');
-            }
+            if (event.state && event.state.page) { showPage(event.state.page); } else { showPage('home-page'); }
         });
-
         window.addEventListener('load', function() {
-            if(window.location.hash) {
-                showPage(window.location.hash.replace('#', ''));
-            }
+            if(window.location.hash) { showPage(window.location.hash.replace('#', '')); }
         });
 
-        // GALLERY FILTER
+        // 6. GALLERY + LIGHTBOX
         function filterSelection(c) {
             var x = document.getElementsByClassName("masonry-item");
             var btns = document.getElementsByClassName("filter-btn");
             for (var i = 0; i < btns.length; i++) {
                 btns[i].classList.remove("active");
-                if(btns[i].innerText.toLowerCase() === c || (c === 'all' && btns[i].innerText === 'ALL')) {
-                    btns[i].classList.add("active");
-                }
+                if(btns[i].innerText.toLowerCase() === c || (c === 'all' && btns[i].innerText === 'ALL')) btns[i].classList.add("active");
             }
             if (c == "all") c = "";
             for (var i = 0; i < x.length; i++) {
@@ -402,8 +430,6 @@
                 if (x[i].className.indexOf(c) > -1) x[i].style.display = "block";
             }
         }
-
-        // LIGHTBOX
         function openLightbox(src) {
             document.getElementById('lightbox-img').src = src;
             document.getElementById('lightbox').style.display = 'flex';
@@ -411,7 +437,6 @@
         function closeLightbox() {
             document.getElementById('lightbox').style.display = 'none';
         }
-
         filterSelection("all");
     </script>
 

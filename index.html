@@ -139,6 +139,71 @@
         .back-btn { color: var(--text-secondary); display: inline-block; margin-bottom: 20px; font-size: 0.9rem; transition: 0.3s; }
         .back-btn:hover { color: #fff; transform: translateX(-5px); }
 
+        /* --- MOBILE MENU STYLES --- */
+.menu-icon {
+    display: none; /* Hidden on desktop */
+    font-size: 1.5rem;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* The Side Drawer (Hidden Panel) */
+.side-drawer {
+    height: 100%;
+    width: 0; /* Start closed */
+    position: fixed;
+    z-index: 2000;
+    top: 0;
+    left: 0;
+    background-color: #111; /* Dark background */
+    overflow-x: hidden;
+    transition: 0.4s; /* Smooth slide effect */
+    padding-top: 60px;
+    box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+}
+
+.drawer-links a {
+    padding: 15px 30px;
+    text-decoration: none;
+    font-size: 1.2rem;
+    color: #888;
+    display: block;
+    transition: 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.drawer-links a:hover {
+    color: var(--accent-color);
+    padding-left: 40px; /* Slide effect on hover */
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+    cursor: pointer;
+    color: #fff;
+}
+
+.drawer-footer {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+    color: var(--accent-color);
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+/* SHOW HAMBURGER ON MOBILE */
+@media (max-width: 768px) {
+    .menu-icon { display: block; }
+    /* Hide bottom nav if you still have it, or keep both */
+    .mobile-nav { display: none; } 
+}
         /* --- 13. FOOTER --- */
         footer { text-align: center; padding: 100px 5% 50px; border-top: 1px solid #222; background: #000; }
         .footer-title { font-size: clamp(3rem, 8vw, 8rem); font-weight: 800; line-height: 1; margin-bottom: 40px; letter-spacing: -2px; background: linear-gradient(to right, #fff, #666); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -187,17 +252,42 @@
 </div>
 
     <!-- NAVIGATION -->
-    <nav class="navbar">
-        <div class="logo" onclick="navigateTo('home-page')" style="cursor:pointer;">
-            <!-- Replace with your logo -->
-            <img src="Assets/logo.png" alt="Edwin Gyasi" class="logo-img" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">
+    <!-- NAVIGATION WITH HAMBURGER -->
+<nav class="navbar">
+    <!-- 1. The Container for Icon + Logo -->
+    <div style="display: flex; align-items: center; gap: 15px;">
+        <!-- The Hamburger Icon (Visible on Mobile) -->
+        <div class="menu-icon" onclick="toggleMobileMenu()">
+            <i class="fas fa-bars"></i>
         </div>
-        <ul class="nav-links">
-            <li><a onclick="navigateTo('home-page')" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">Home</a></li>
-            <li><a onclick="navigateTo('full-gallery')" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">The Vault</a></li>
-            <li><a href="#footer" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">Contact</a></li>
-        </ul>
-    </nav>
+        
+        <!-- Your Logo -->
+        <div class="logo" onclick="navigateTo('home-page')" style="cursor:pointer;">
+            <img src="assets/logo.png" alt="Edwin Gyasi" class="logo-img">
+        </div>
+    </div>
+
+    <!-- Desktop Links (Hidden on Mobile) -->
+    <ul class="nav-links">
+        <li><a onclick="navigateTo('home-page')">Home</a></li>
+        <li><a onclick="navigateTo('full-gallery')">The Vault</a></li>
+        <li><a href="#footer">Contact</a></li>
+    </ul>
+
+    <!-- 2. THE SIDE DRAWER (Hidden by default) -->
+    <div id="side-drawer" class="side-drawer">
+        <span class="close-btn" onclick="toggleMobileMenu()">&times;</span>
+        <div class="drawer-links">
+            <a onclick="mobileNavigate('home-page')">Home</a>
+            <a onclick="mobileNavigate('full-gallery')">The Vault</a>
+            <a onclick="mobileNavigate('case-study-burger')">Featured Projects</a>
+            <a href="#footer" onclick="toggleMobileMenu()">Contact</a>
+        </div>
+        <div class="drawer-footer">
+            <p>CEO GYASI</p>
+        </div>
+    </div>
+</nav>
 
     <!-- ===================================================== -->
     <!-- PAGE 1: HOME                                          -->
@@ -438,6 +528,25 @@
             document.getElementById('lightbox').style.display = 'none';
         }
         filterSelection("all");
+
+        // --- MOBILE DRAWER LOGIC ---
+function toggleMobileMenu() {
+    const drawer = document.getElementById("side-drawer");
+    // If width is 0, open it. If not, close it.
+    if (drawer.style.width === "250px") {
+        drawer.style.width = "0";
+    } else {
+        drawer.style.width = "250px";
+    }
+}
+
+function mobileNavigate(pageId) {
+    // Close drawer first
+    document.getElementById("side-drawer").style.width = "0";
+    // Then navigate
+    navigateTo(pageId);
+}
+    
     </script>
 
 </body>

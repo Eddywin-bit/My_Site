@@ -13,7 +13,7 @@
         :root {
             --bg-color: #050505;
             --bg-secondary: #111;
-            --text-primary: #ffffff;
+            --text-primary: #yleffffff;
             --text-secondary: #aaa;
             --accent-color: #D4AF37; /* Gold */
             --nav-height: 80px;
@@ -29,6 +29,23 @@
         body { background: var(--bg-color); color: var(--text-primary); font-family: 'Inter', sans-serif; overflow-x: hidden; }
         img { width: 100%; display: block; border-radius: 8px; }
         a { text-decoration: none; transition: 0.3s; color: inherit; }
+
+        /* --- GLOBAL CURSOR FIX --- */
+        
+        /* 1. Force the standard Arrow cursor on everything by default */
+        html, body, p, h1, h2, h3, h4, h5, span, div, img {
+            cursor: default; 
+        }
+
+        /* 2. Force the Hand cursor on all clickable items */
+        a, button, .btn, .logo, .hamburger, .project-card, .masonry-item, .back-btn, .submit-btn, .social-icon-btn, .to-top {
+            cursor: pointer;
+        }
+
+        /* 3. Keep the "I-beam" cursor ONLY for the contact form inputs so people know they can type */
+        input, textarea {
+            cursor: text;
+        }
 
         /* --- 3. PRELOADER (New) --- */
         .preloader {
@@ -148,17 +165,102 @@
         .email-link { font-size: 1.1rem; color: #888; border-bottom: 1px solid #333; padding-bottom: 5px; display: inline-block; }
 
         /* RESPONSIVE (MOBILE) */
+        /* --- 14. ABOUT & CONTACT STYLES (ADD THIS) --- */
+        .about-container { display: flex; gap: 60px; max-width: 1200px; margin: 0 auto; align-items: center; }
+        .about-img { flex: 1; }
+        .about-content { flex: 1; }
+        .stats-row { display: flex; gap: 40px; margin-top: 40px; border-top: 1px solid #222; padding-top: 30px; }
+        .stat-item h3 { font-size: 2.5rem; color: var(--accent-color); margin-bottom: 5px; }
+        .stat-item p { font-size: 0.9rem; color: #888; text-transform: uppercase; }
+
+        .contact-section-wrapper { max-width: 800px; margin: 0 auto; padding: 50px 5%; }
+        .contact-form { background: var(--bg-secondary); padding: 40px; border-radius: 12px; border: 1px solid #222; }
+        .form-group { margin-bottom: 25px; }
+        .form-group label { display: block; margin-bottom: 10px; color: var(--text-secondary); font-size: 0.9rem; }
+        .form-control { width: 100%; background: #000; border: 1px solid #333; padding: 15px; color: #fff; border-radius: 6px; font-family: inherit; transition: 0.3s; }
+        .form-control:focus { outline: none; border-color: var(--accent-color); }
+        .submit-btn { width: 100%; border: none; cursor: pointer; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; background: var(--accent-color); color: #000; padding: 15px; border-radius: 6px; font-weight: bold; }
+
+        /* Hamburger Icon Style */
+        .hamburger { display: none; cursor: pointer; font-size: 1.5rem; color: var(--text-primary); z-index: 1001; }
+
+        /* --- RESPONSIVE (MOBILE FIXES) --- */
         @media (max-width: 768px) {
-            .nav-links { display: none; }
+            /* Show Hamburger, Hide Nav initially */
+            .hamburger { display: block; }
+            
+            .nav-links {
+                position: fixed; top: 0; right: -100%; width: 80%; height: 100vh;
+                background: #111; flex-direction: column;
+                justify-content: center; align-items: center; transition: 0.4s ease-in-out;
+                box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+                z-index: 1000;
+            }
+            
+            /* Class to slide menu in */
+            .nav-links.active { right: 0; }
+            .nav-links li { margin: 20px 0; }
+
             .back-btn { display: none !important; }
             .hero-text h1 { font-size: 2.5rem; line-height: 1.2; } 
             .hero-container { flex-direction: column-reverse; text-align: center; padding-top: 40px; }
             .hero-text { padding-right: 0; }
             .project-card, .project-card:nth-child(even) { flex-direction: column; gap: 30px; margin-bottom: 80px; }
             .masonry-grid { column-count: 2; } 
+            .about-container { flex-direction: column; text-align: center; }
+            .stats-row { justify-content: center; }
             .case-gallery { grid-template-columns: 1fr; }
             .case-meta { flex-direction: column; gap: 10px; font-size: 0.8rem; }
         }
+
+        /* --- MASTER OVERRIDES (Paste at the bottom of CSS) --- */
+
+        /* 1. FORCE ALL HEADERS WHITE globally */
+        h1, h2, h3, h4, h5, h6 {
+            color: #ffffff !important;
+        }
+
+        /* 2. FORCE HERO FONT SIZE (Manual Control) */
+        /* This overrides the 'clamp' making it easier to adjust */
+        .hero-text h1 {
+            font-size: 80px !important; /* Adjust this number for Desktop size */
+            line-height: 1.1;
+        }
+
+        /* 3. FORCE SECTION TITLES SIZE */
+        .section-title {
+            font-size: 50px !important; /* Adjust this for "Featured Works" size */
+            color: #ffffff !important;
+        }
+
+        /* 4. MOBILE ADJUSTMENTS (Keep text readable on phones) */
+        @media (max-width: 768px) {
+            .hero-text h1 {
+                font-size: 45px !important; /* Adjust this for Mobile size */
+            }
+            .section-title {
+                font-size: 35px !important;
+            }
+        }
+
+        /* --- SPECIFIC FIXES (Paste at the VERY bottom) --- */
+
+/* 1. Restore Gold Color to the Stats (5+, 50+, etc.) */
+.stat-item h3 {
+    color: var(--accent-color) !important; 
+}
+
+/* 2. Force Increase "Designing With Purpose" Font Size */
+.about-content h2 {
+    font-size: 3rem !important; /* Increase this number to make it bigger */
+    line-height: 1.2;
+}
+
+/* 3. Ensure the "About Me" title is also big and white */
+#about-page h1 {
+    font-size: 4rem !important;
+    color: #ffffff !important;
+}
     </style>
 </head>
 <body>
@@ -187,15 +289,22 @@
 </div>
 
     <!-- NAVIGATION -->
+    <!-- NAVIGATION -->
     <nav class="navbar">
         <div class="logo" onclick="navigateTo('home-page')" style="cursor:pointer;">
-            <!-- Replace with your logo -->
             <img src="Assets/logo.webp" alt="Edwin Gyasi" class="logo-img" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">
         </div>
-        <ul class="nav-links">
-            <li><a onclick="navigateTo('home-page')" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">Home</a></li>
-            <li><a onclick="navigateTo('full-gallery')" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">The Vault</a></li>
-            <li><a href="#footer" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">Contact</a></li>
+        
+        <!-- HAMBURGER ICON ADDED HERE -->
+        <div class="hamburger" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </div>
+
+        <ul class="nav-links" id="nav-links">
+            <li><a onclick="navigateTo('home-page'); toggleMenu()" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">Home</a></li>
+            <li><a onclick="navigateTo('about-page'); toggleMenu()" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">About</a></li>
+            <li><a onclick="navigateTo('full-gallery'); toggleMenu()" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">The Vault</a></li>
+            <li><a onclick="navigateTo('contact-page'); toggleMenu()" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">Contact</a></li>
         </ul>
     </nav>
 
@@ -206,8 +315,7 @@
         
         <div class="hero-container reveal">
             <div class="hero-text">
-                <span style="color: var(--accent-color); letter-spacing: 2px; font-size: 0.9rem; font-weight: 700;">CREATIVE DIRECTOR</span>
-                <h1>Hello,<br>I'm <span style="color: var(--accent-color);">Edwin.</span></h1>
+                <h1 style="color: white;">Hello,<br>I'm <span style="color: var(--accent-color);">Edwin.</span></h1>
                 <p style="color: #aaa; max-width: 500px; margin-bottom: 30px;">Helping brands dominate their market through high-end design and strategic storytelling.</p>
                 <a onclick="navigateTo('full-gallery')" class="btn" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">View Full Archive</a>
             </div>
@@ -217,7 +325,7 @@
         </div>
 
         <div class="featured-wrapper">
-            <h2 class="section-title reveal">Featured Works</h2>
+            <h2 style="color: white;"class="section-title reveal">Featured Works</h2>
 
             <div class="project-card reveal" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">
                 <div class="p-img" onclick="navigateTo('case-study-burger')">
@@ -225,7 +333,7 @@
                 </div>
                 <div class="p-info">
                     <span class="p-cat">Commercial Marketing</span>
-                    <h3 class="p-title">Spicy Burger Campaign</h3>
+                    <h3 style="color: white;"class="p-title">Spicy Burger Campaign</h3>
                     <p style="color:#888; margin-bottom: 20px;">A 360-degree rollout for a fast-food chain.</p>
                     <a onclick="navigateTo('case-study-burger')" class="btn btn-outline">View Case Study</a>
                 </div>
@@ -237,7 +345,7 @@
                 </div>
                 <div class="p-info">
                     <span class="p-cat">Academic Branding</span>
-                    <h3 class="p-title">KNUST Engineering Seminar</h3>
+                    <h3 style="color: white;"class="p-title">KNUST Engineering Seminar</h3>
                     <p style="color:#888; margin-bottom: 20px;">Complete identity design for the annual summit.</p>
                     <a onclick="navigateTo('case-study-knust')" class="btn btn-outline">View Case Study</a>
                 </div>
@@ -249,7 +357,7 @@
                 </div>
                 <div class="p-info">
                     <span class="p-cat">Event Design</span>
-                    <h3 class="p-title">Church Youth Summit</h3>
+                    <h3 style="color: white;"class="p-title">Church Youth Summit</h3>
                     <p style="color:#888; margin-bottom: 20px;">Merchandise and stage design for a 3-day conference.</p>
                     <a onclick="navigateTo('case-study-summit')" class="btn btn-outline">View Case Study</a>
                 </div>
@@ -257,9 +365,73 @@
         </div>
 
         <div class="reveal" style="background: #111; padding: 80px 5%; text-align: center;">
-            <h2>The Archive</h2>
+            <h2 style="color: white;">The Archive</h2>
             <p style="color: #888; margin-bottom: 30px;">Explore 50+ Flyers, Brands, and Designs.</p>
             <a onclick="navigateTo('full-gallery')" class="btn" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">Open The Vault</a>
+        </div>
+    </div>
+
+    <!-- ===================================================== -->
+    <!-- PAGE: ABOUT SECTION (NEW)                             -->
+    <!-- ===================================================== -->
+    <div id="about-page" class="page-section">
+        <div style="padding: 0 5%; max-width: 1400px; margin: 0 auto;">
+             <div style="text-align: center; margin-bottom: 50px;">
+                <h1 style="font-size: 3rem; margin-bottom: 10px;">About Me</h1>
+                <p style="color: var(--accent-color); text-transform: uppercase; letter-spacing: 2px;">The Person Behind The Pixels</p>
+            </div>
+
+            <div class="about-container reveal">
+                <div class="about-img">
+                    <!-- Make sure this image exists in your Assets folder -->
+                    <img src="Assets/1000007946.webp" alt="Edwin Gyasi Portrait" style="max-height: 500px; object-fit: cover;">
+                </div>
+                <div class="about-content">
+                    <h2 style="color: white;"style="margin-bottom: 20px; font-size: 2rem;">Designing With Purpose.</h2>
+                    <p style="color: #aaa; line-height: 1.8; margin-bottom: 20px;">
+                        I'm Edwin, a Creative Director based in Ghana. My journey began with a simple curiosity for how things look, evolving into a passion for how things work.
+                    </p>
+                    <p style="color: #aaa; line-height: 1.8; margin-bottom: 30px;">
+                        Over the years, I've worked with brands, churches, and institutions to create visual identities that don't just look good—they communicate. My philosophy is simple: Design is not art; it's a solution.
+                    </p>
+
+                    <div class="stats-row">
+                        <div class="stat-item"><h3>5+</h3><p>Years Exp.</p></div>
+                        <div class="stat-item"><h3>50+</h3><p>Projects</p></div>
+                        <div class="stat-item"><h3>20+</h3><p>Clients</p></div>
+                    </div>
+                    
+                    <a onclick="navigateTo('contact-page')" class="btn" style="margin-top: 40px;" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">Get In Touch</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================================================== -->
+    <!-- PAGE: CONTACT FORM (NEW)                              -->
+    <!-- ===================================================== -->
+    <div id="contact-page" class="page-section">
+        <div class="contact-section-wrapper reveal">
+            <div style="text-align: center; margin-bottom: 50px;">
+                <h1 style="font-size: 3rem; margin-bottom: 10px;">Get In Touch</h1>
+                <p style="color: var(--accent-color); text-transform: uppercase; letter-spacing: 2px;">Let's Create Something Legendary</p>
+            </div>
+
+            <form class="contact-form" onsubmit="event.preventDefault(); alert('Message Sent! (Demo Only)');">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" class="form-control" placeholder="Your Name">
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" class="form-control" placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label>Message</label>
+                    <textarea rows="5" class="form-control" placeholder="Tell me about your vision..."></textarea>
+                </div>
+                <button type="submit" class="submit-btn" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">Send Message</button>
+            </form>
         </div>
     </div>
 
@@ -416,6 +588,20 @@
             if(window.scrollY > 500) btn.classList.add('visible');
             else btn.classList.remove('visible');
         });
+        // --- 7. MOBILE MENU TOGGLE (ADD THIS) ---
+        function toggleMenu() {
+            const navLinks = document.getElementById('nav-links');
+            navLinks.classList.toggle('active');
+            
+            const icon = document.querySelector('.hamburger i');
+            if(navLinks.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        }
 
         // 5. NAVIGATION (Standard + History)
         function navigateTo(pageId) {

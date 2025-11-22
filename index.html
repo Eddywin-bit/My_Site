@@ -266,6 +266,23 @@
 .hamburger {
     color: #ffffff !important;
 }
+
+/* --- MOBILE HERO IMAGE FIX (Paste at bottom) --- */
+@media (max-width: 768px) {
+    /* 1. Restrict the image container height */
+    .hero-image {
+        margin-bottom: 20px !important; /* Reduce gap between image and text */
+        display: flex;
+        justify-content: center; /* Center the image */
+    }
+
+    /* 2. Force the actual image to be smaller */
+    .hero-image img {
+        max-height: 350px !important; /* Cap the height so it doesn't take full screen */
+        width: auto !important; /* Let width adjust automatically */
+        max-width: 80% !important; /* Don't touch the edges of the screen */
+    }
+}
     </style>
 </head>
 <body>
@@ -422,21 +439,34 @@
                 <p style="color: var(--accent-color); text-transform: uppercase; letter-spacing: 2px;">Let's Create Something Legendary</p>
             </div>
 
-            <form class="contact-form" onsubmit="event.preventDefault(); alert('Message Sent! (Demo Only)');">
-                <div class="form-group">
-                    <label>Full Name</label>
-                    <input type="text" class="form-control" placeholder="Your Name">
-                </div>
-                <div class="form-group">
-                    <label>Email Address</label>
-                    <input type="email" class="form-control" placeholder="your@email.com">
-                </div>
-                <div class="form-group">
-                    <label>Message</label>
-                    <textarea rows="5" class="form-control" placeholder="Tell me about your vision..."></textarea>
-                </div>
-                <button type="submit" class="submit-btn" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">Send Message</button>
-            </form>
+           <!-- 1. PASTE YOUR FORMSPREE LINK HERE -->
+<form class="contact-form" action="https://formspree.io/f/mldvlegw" method="POST">
+    
+    <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" name="name" class="form-control" placeholder="Your Name" required>
+    </div>
+
+    <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" name="email" class="form-control" placeholder="your@email.com" required>
+    </div>
+
+    <div class="form-group">
+        <label>Project Type</label>
+        <input type="text" name="subject" class="form-control" placeholder="e.g. Brand Identity, Flyer">
+    </div>
+
+    <div class="form-group">
+        <label>Message</label>
+        <textarea rows="5" name="message" class="form-control" placeholder="Tell me about your vision..." required></textarea>
+    </div>
+
+    <!-- 2. PUT YOUR WEBSITE LINK HERE (OR DELETE THIS LINE IF YOU DON'T HAVE ONE YET) -->
+    <input type="hidden" name="_next" value="https://eddywin-bit.github.io/My_Site/">
+
+    <button type="submit" class="submit-btn" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">Send Message</button>
+</form>
         </div>
     </div>
 

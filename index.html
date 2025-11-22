@@ -185,109 +185,69 @@
         .hamburger { display: none; cursor: pointer; font-size: 1.5rem; color: var(--text-primary); z-index: 1001; }
 
         /* --- RESPONSIVE (MOBILE FIXES) --- */
-        @media (max-width: 768px) {
-            /* Show Hamburger, Hide Nav initially */
-            .hamburger { display: block; }
-            
-            .nav-links {
-                position: fixed; top: 0; right: -100%; width: 80%; height: 100vh;
-                background: #111; flex-direction: column;
-                justify-content: center; align-items: center; transition: 0.4s ease-in-out;
-                box-shadow: -5px 0 15px rgba(0,0,0,0.5);
-                z-index: 1000;
-            }
-            
-            /* Class to slide menu in */
-            .nav-links.active { right: 0; }
-            .nav-links li { margin: 20px 0; }
-
-            .back-btn { display: none !important; }
-            .hero-text h1 { font-size: 2.5rem; line-height: 1.2; } 
-            .hero-container { flex-direction: column-reverse; text-align: center; padding-top: 40px; }
-            .hero-text { padding-right: 0; }
-            .project-card, .project-card:nth-child(even) { flex-direction: column; gap: 30px; margin-bottom: 80px; }
-            .masonry-grid { column-count: 2; } 
-            .about-container { flex-direction: column; text-align: center; }
-            .stats-row { justify-content: center; }
-            .case-gallery { grid-template-columns: 1fr; }
-            .case-meta { flex-direction: column; gap: 10px; font-size: 0.8rem; }
-        }
-
-        /* --- MASTER OVERRIDES (Paste at the bottom of CSS) --- */
-
-        /* 1. FORCE ALL HEADERS WHITE globally */
-        h1, h2, h3, h4, h5, h6 {
-            color: #ffffff !important;
-        }
-
-        /* 2. FORCE HERO FONT SIZE (Manual Control) */
-        /* This overrides the 'clamp' making it easier to adjust */
-        .hero-text h1 {
-            font-size: 80px !important; /* Adjust this number for Desktop size */
-            line-height: 1.1;
-        }
-
-        /* 3. FORCE SECTION TITLES SIZE */
-        .section-title {
-            font-size: 50px !important; /* Adjust this for "Featured Works" size */
-            color: #ffffff !important;
-        }
-
-        /* 4. MOBILE ADJUSTMENTS (Keep text readable on phones) */
-        /* --- MOBILE HERO: ROUNDED CINEMATIC BOX --- */
-/* --- FINAL MOBILE MASTER FIX --- */
-/* --- FINAL ZOOMED CINEMATIC MOBILE HERO --- */
+        /* --- FINAL MASTER MOBILE FIX (Zoom + Text Layout) --- */
 @media (max-width: 768px) {
+    /* 1. LAYOUT: Image Top, Text Bottom */
     .hero-container {
-        padding-top: 30px !important;
+        padding-top: 20px !important; /* Tighter to top */
         flex-direction: column-reverse; 
+        gap: 20px !important; /* Reduces gap between image and text */
     }
 
-    /* 1. THE FRAME (The Box Size) */
+    /* 2. THE IMAGE (Zoomed Cinematic Box) */
     .hero-image {
-        /* This defines the visible area */
-        width: 90% !important;  /* Width of the box */
-        height: 400px !important; /* Height of the box */
-        
-        margin: 0 auto 25px auto !important; /* Centers the box */
+        width: 90% !important;
+        height: 400px !important;
+        margin: 0 auto !important; /* Centered */
         display: block !important;
-        
-        border-radius: 20px !important; /* The rounded corners go here now */
-        overflow: hidden !important; /* CRITICAL: Hides the zoomed parts that stick out */
+        border-radius: 20px !important;
+        overflow: hidden !important; /* Hides the zoomed parts */
         box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
     }
 
-    /* 2. THE PHOTO (The Zoom) */
     .hero-image img {
         width: 100% !important;
         height: 100% !important;
         object-fit: cover !important;
-        
-        /* ZOOM CONTROLS */
-        transform: scale(1.25) !important; /* 1.25 = 25% Zoomed In. Change to 1.1 or 1.3 to adjust. */
-        transform-origin: top center !important; /* Zooms towards your face, not the center of the photo */
-        
-        border-radius: 0 !important; /* Reset radius on image since the frame handles it */
+        /* THE ZOOM */
+        transform: scale(1.25) !important; 
+        transform-origin: top center !important; /* Focus on face */
     }
 
-    /* 3. THE TEXT */
+    /* 3. THE TEXT (Fixed Layout) */
     .hero-text {
         text-align: center !important;
-        padding: 0 15px !important;
+        padding: 0 10px !important;
     }
 
+    /* THE HEADER: "Hello, I'm Edwin" */
     .hero-text h1 {
-        font-size: 42px !important;
-        line-height: 1.2 !important;
+        font-size: 38px !important; /* Slightly smaller to ensure clean lines */
+        line-height: 1.2 !important; /* Tighter vertical spacing */
         color: #ffffff !important;
-        margin-bottom: 15px !important;
+        margin-bottom: 10px !important; /* Pulls the paragraph closer */
+        display: block !important;
     }
-    
-    /* Ensure the "Creative Director" text is spaced well */
-    .hero-text span {
-        display: block;
-        margin-top: 10px;
-        margin-bottom: 10px;
+
+    /* Force the break explicitly if needed */
+    .hero-text h1 br {
+        display: block !important;
+        content: ""; 
+        margin-top: 5px;
+    }
+
+    /* 4. THE PARAGRAPH (The Description) */
+    .hero-text p {
+        font-size: 0.95rem !important;
+        margin-bottom: 20px !important; /* REDUCED from 30px to pull button up */
+        line-height: 1.5 !important;
+    }
+
+    /* 5. THE BUTTON (Pulled Up) */
+    .hero-text .btn {
+        margin-top: 0 !important; /* Removes extra top space */
+        width: auto !important;
+        padding: 12px 40px !important; /* Wider button looks better on mobile */
     }
 }
 

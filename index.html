@@ -234,14 +234,39 @@
         }
 
         /* 4. MOBILE ADJUSTMENTS (Keep text readable on phones) */
-        @media (max-width: 768px) {
-            .hero-text h1 {
-                font-size: 45px !important; /* Adjust this for Mobile size */
-            }
-            .section-title {
-                font-size: 35px !important;
-            }
-        }
+        /* --- MOBILE HERO: GOLDEN CIRCLE STYLE --- */
+@media (max-width: 768px) {
+    .hero-container {
+        padding-top: 20px !important; /* Less gap at the top */
+    }
+
+    .hero-image {
+        margin-bottom: 20px !important;
+        display: flex;
+        justify-content: center;
+    }
+
+    .hero-image img {
+        /* 1. SHAPE & SIZE */
+        width: 280px !important;  /* Control the size here (280px is a good balance) */
+        height: 280px !important; /* Must be same as width for a perfect circle */
+        
+        /* 2. THE CIRCLE MAGIC */
+        border-radius: 50% !important;
+        object-fit: cover !important; /* Ensures your face doesn't look squashed */
+        object-position: top center !important; /* Focuses on your face, crops the body */
+        
+        /* 3. THE GOLD BORDER (Like your reference) */
+        border: 4px solid var(--accent-color) !important;
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.3) !important; /* Gold Glow */
+    }
+    
+    /* 4. Adjust text alignment for the new look */
+    .hero-text {
+        text-align: center !important;
+        padding: 0 !important;
+    }
+}
 
         /* --- SPECIFIC FIXES (Paste at the VERY bottom) --- */
 
@@ -267,6 +292,22 @@
     color: #ffffff !important;
 }
 
+/* --- 1. DEFINE THE ANIMATION --- */
+@keyframes levitate {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); } /* Moves up slightly */
+    100% { transform: translateY(0px); }
+}
+
+/* --- 2. APPLY IT TO THE MOBILE HERO --- */
+@media (max-width: 768px) {
+    .hero-image img {
+        /* Keep all your existing border/shape styles here... */
+        
+        /* Add this animation line: */
+        animation: levitate 6s ease-in-out infinite;
+    }
+}
     </style>
 </head>
 <body>

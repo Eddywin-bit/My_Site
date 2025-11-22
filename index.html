@@ -267,22 +267,6 @@
     color: #ffffff !important;
 }
 
-/* --- MOBILE HERO IMAGE FIX (Paste at bottom) --- */
-@media (max-width: 768px) {
-    /* 1. Restrict the image container height */
-    .hero-image {
-        margin-bottom: 20px !important; /* Reduce gap between image and text */
-        display: flex;
-        justify-content: center; /* Center the image */
-    }
-
-    /* 2. Force the actual image to be smaller */
-    .hero-image img {
-        max-height: 350px !important; /* Cap the height so it doesn't take full screen */
-        width: auto !important; /* Let width adjust automatically */
-        max-width: 80% !important; /* Don't touch the edges of the screen */
-    }
-}
     </style>
 </head>
 <body>
@@ -440,7 +424,7 @@
             </div>
 
            <!-- 1. PASTE YOUR FORMSPREE LINK HERE -->
-<form class="contact-form" action="https://formspree.io/f/mldvlegw" method="POST">
+<form id="contact-form" class="contact-form" action="https://formspree.io/f/mldvlegw" method="POST">
     
     <div class="form-group">
         <label>Full Name</label>
@@ -678,6 +662,51 @@
             document.getElementById('lightbox').style.display = 'none';
         }
         filterSelection("all");
+
+        // --- 8. SMART FORM HANDLING (Paste at bottom of script) ---
+        const form = document.getElementById("contact-form");
+        
+        async function handleSubmit(event) {
+            event.preventDefault(); // Stop the browser from leaving the page
+            
+            const status = document.createElement("div"); // Create a status message
+            status.style.marginTop = "10px";
+            status.style.fontWeight = "bold";
+            form.appendChild(status);
+
+            const data = new FormData(event.target);
+
+            fetch(event.target.action, {
+                method: form.method,
+                body: data,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    status.innerHTML = "Message Sent! I'll be in touch.";
+                    status.style.color = "#D4AF37"; // Gold color
+                    form.reset(); // <--- THIS CLEARS THE TEXT INPUTS
+                    
+                    // Remove message after 5 seconds
+                    setTimeout(() => status.remove(), 5000);
+                } else {
+                    response.json().then(data => {
+                        if (Object.hasOwn(data, 'errors')) {
+                            status.innerHTML = data["errors"].map(error => error["message"]).join(", ");
+                        } else {
+                            status.innerHTML = "Oops! There was a problem submitting your form";
+                        }
+                        status.style.color = "red";
+                    })
+                }
+            }).catch(error => {
+                status.innerHTML = "Oops! There was a problem submitting your form";
+                status.style.color = "red";
+            });
+        }
+        
+        form.addEventListener("submit", handleSubmit);
     </script>
 
 </body>

@@ -234,14 +234,41 @@
         }
 
         /* 4. MOBILE ADJUSTMENTS (Keep text readable on phones) */
-        @media (max-width: 768px) {
-            .hero-text h1 {
-                font-size: 45px !important; /* Adjust this for Mobile size */
-            }
-            .section-title {
-                font-size: 35px !important;
-            }
-        }
+        /* --- MOBILE HERO: ROUNDED CINEMATIC BOX --- */
+@media (max-width: 768px) {
+    .hero-container {
+        padding-top: 30px !important;
+    }
+
+    .hero-image {
+        margin-bottom: 25px !important;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .hero-image img {
+        /* 1. THE SOFT EDGES (Key Change) */
+        border-radius: 20px !important; /* This creates the smooth, modern corners */
+        
+        /* 2. BALANCED SIZE */
+        width: auto !important;
+        max-width: 90% !important; /* Breathing room on sides */
+        height: 400px !important; /* Taller than the circle, shorter than full screen */
+        
+        /* 3. FRAMING */
+        object-fit: cover !important;
+        object-position: top center !important; /* Focuses on face */
+        
+        /* 4. OPTIONAL: SUBTLE SHADOW DEPTH */
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important; /* Adds a "floating" 3D feel */
+    }
+
+    .hero-text {
+        text-align: center !important;
+        padding: 0 10px !important;
+    }
+}
 
         /* --- SPECIFIC FIXES (Paste at the VERY bottom) --- */
 

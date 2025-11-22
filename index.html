@@ -236,43 +236,58 @@
         /* 4. MOBILE ADJUSTMENTS (Keep text readable on phones) */
         /* --- MOBILE HERO: ROUNDED CINEMATIC BOX --- */
 /* --- FINAL MOBILE MASTER FIX --- */
+/* --- FINAL ZOOMED CINEMATIC MOBILE HERO --- */
 @media (max-width: 768px) {
-    /* 1. LAYOUT: Image Top, Text Bottom */
     .hero-container {
         padding-top: 30px !important;
         flex-direction: column-reverse; 
     }
 
-    /* 2. THE IMAGE: Rounded Cinematic Box */
+    /* 1. THE FRAME (The Box Size) */
     .hero-image {
-        margin-bottom: 25px !important;
-        display: flex;
-        justify-content: center;
-        width: 100%;
+        /* This defines the visible area */
+        width: 90% !important;  /* Width of the box */
+        height: 400px !important; /* Height of the box */
+        
+        margin: 0 auto 25px auto !important; /* Centers the box */
+        display: block !important;
+        
+        border-radius: 20px !important; /* The rounded corners go here now */
+        overflow: hidden !important; /* CRITICAL: Hides the zoomed parts that stick out */
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
     }
 
+    /* 2. THE PHOTO (The Zoom) */
     .hero-image img {
-        border-radius: 20px !important; /* Smooth modern corners */
-        width: auto !important;
-        max-width: 90% !important; /* Breathing room on sides */
-        height: 400px !important; /* Balanced height */
+        width: 100% !important;
+        height: 100% !important;
         object-fit: cover !important;
-        object-position: top center !important; /* Focus on face */
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important; /* Floating effect */
+        
+        /* ZOOM CONTROLS */
+        transform: scale(1.25) !important; /* 1.25 = 25% Zoomed In. Change to 1.1 or 1.3 to adjust. */
+        transform-origin: top center !important; /* Zooms towards your face, not the center of the photo */
+        
+        border-radius: 0 !important; /* Reset radius on image since the frame handles it */
     }
 
-    /* 3. THE TEXT: Smaller & Split Lines */
+    /* 3. THE TEXT */
     .hero-text {
         text-align: center !important;
         padding: 0 15px !important;
     }
 
     .hero-text h1 {
-        /* This fixes the "Too Huge" issue */
-        font-size: 42px !important; /* Perfect mobile size (not 80px like desktop) */
+        font-size: 42px !important;
         line-height: 1.2 !important;
         color: #ffffff !important;
         margin-bottom: 15px !important;
+    }
+    
+    /* Ensure the "Creative Director" text is spaced well */
+    .hero-text span {
+        display: block;
+        margin-top: 10px;
+        margin-bottom: 10px;
     }
 }
 

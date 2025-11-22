@@ -235,11 +235,15 @@
 
         /* 4. MOBILE ADJUSTMENTS (Keep text readable on phones) */
         /* --- MOBILE HERO: ROUNDED CINEMATIC BOX --- */
+/* --- FINAL MOBILE MASTER FIX --- */
 @media (max-width: 768px) {
+    /* 1. LAYOUT: Image Top, Text Bottom */
     .hero-container {
         padding-top: 30px !important;
+        flex-direction: column-reverse; 
     }
 
+    /* 2. THE IMAGE: Rounded Cinematic Box */
     .hero-image {
         margin-bottom: 25px !important;
         display: flex;
@@ -248,25 +252,27 @@
     }
 
     .hero-image img {
-        /* 1. THE SOFT EDGES (Key Change) */
-        border-radius: 20px !important; /* This creates the smooth, modern corners */
-        
-        /* 2. BALANCED SIZE */
+        border-radius: 20px !important; /* Smooth modern corners */
         width: auto !important;
         max-width: 90% !important; /* Breathing room on sides */
-        height: 400px !important; /* Taller than the circle, shorter than full screen */
-        
-        /* 3. FRAMING */
+        height: 400px !important; /* Balanced height */
         object-fit: cover !important;
-        object-position: top center !important; /* Focuses on face */
-        
-        /* 4. OPTIONAL: SUBTLE SHADOW DEPTH */
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important; /* Adds a "floating" 3D feel */
+        object-position: top center !important; /* Focus on face */
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important; /* Floating effect */
     }
 
+    /* 3. THE TEXT: Smaller & Split Lines */
     .hero-text {
         text-align: center !important;
-        padding: 0 10px !important;
+        padding: 0 15px !important;
+    }
+
+    .hero-text h1 {
+        /* This fixes the "Too Huge" issue */
+        font-size: 42px !important; /* Perfect mobile size (not 80px like desktop) */
+        line-height: 1.2 !important;
+        color: #ffffff !important;
+        margin-bottom: 15px !important;
     }
 }
 

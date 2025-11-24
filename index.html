@@ -566,6 +566,19 @@ div[style*="background: #111"] h2 {
         justify-content: center !important;
     }
 }
+
+/* --- FIX: REALIGN ABOUT IMAGE & TEXT --- */
+@media (min-width: 769px) {
+    .about-container {
+        /* This stops them from trying to 'center' and forces them to line up at the TOP */
+        align-items: flex-start !important; 
+    }
+
+    .about-img {
+        /* Adds a tiny push so the image aligns with the text letters, not the invisible box */
+        margin-top: 5px !important; 
+    }
+}
     </style>
 </head>
 <body>

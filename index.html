@@ -382,6 +382,29 @@
         margin-bottom: 10px !important;
     }
 }
+
+/* --- MASTER SILVER GRADIENT TEXT --- */
+/* Applies the "Impact" style to all major headings */
+h1, h2, h3, h4, .hero-text h1, .section-title, #about-page h1 {
+    /* The Silver Gradient (White to Grey) */
+    background: linear-gradient(to right, #ffffff 0%, #666666 100%) !important;
+    
+    /* Clips the background to the text shape */
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    
+    /* Makes the text transparent so gradient shows through */
+    -webkit-text-fill-color: transparent !important;
+    color: transparent !important;
+}
+
+/* --- PROTECT THE GOLD TEXT --- */
+/* This ensures "Edwin" and other gold accents stay Gold */
+span, .stat-item h3 {
+    background: none !important;
+    -webkit-text-fill-color: var(--accent-color) !important;
+    color: var(--accent-color) !important;
+}
     </style>
 </head>
 <body>
@@ -697,12 +720,19 @@
         function cursorLeave() { document.body.classList.remove('hovering'); }
 
 
-        // 3. SCROLL OBSERVER
+        // 3. SCROLL OBSERVER (UPDATED: Re-animates on every scroll)
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('active');
+                if (entry.isIntersecting) {
+                    // Element is visible -> Start Animation
+                    entry.target.classList.add('active');
+                } else {
+                    // Element left the screen -> Reset Animation
+                    entry.target.classList.remove('active'); 
+                }
             });
-        }, { threshold: 0.1 });
+        }, { threshold: 0.1 }); // 0.1 means "start when 10% visible"
+
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
         // 4. BACK TO TOP

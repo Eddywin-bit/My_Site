@@ -536,6 +536,36 @@ div[style*="background: #111"] h2 {
         border-width: 1px !important; /* Thinner border looks cleaner at small size */
     }
 }
+/* --- FORCE ONE LINE (THE ELASTIC FIX) --- */
+@media (max-width: 768px) {
+    .social-row {
+        display: flex !important;
+        flex-wrap: nowrap !important; /* 100% Forbidden to wrap */
+        justify-content: center !important; 
+        align-items: center !important;
+        width: 100% !important;
+        gap: 0 !important; /* We will handle spacing via margins */
+        padding: 0 5px !important; /* Safety padding on edges */
+    }
+
+    .social-icon-btn {
+        /* DYNAMIC SIZING */
+        flex: 1 !important; /* Grow/Shrink to fit the screen */
+        max-width: 40px !important; /* Don't get too big */
+        height: 40px !important; /* Keep height fixed */
+        
+        /* VISUALS */
+        margin: 0 3px !important; /* Tiny consistent gap */
+        font-size: 14px !important; /* Smaller icon inside */
+        border: 1px solid rgba(255,255,255,0.2) !important; /* Thinner border saves space */
+        
+        /* FLEXIBILITY */
+        min-width: 0 !important; /* Allows button to shrink if needed */
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+}
     </style>
 </head>
 <body>

@@ -517,6 +517,22 @@ div[style*="background: #111"] h2 {
     margin-bottom: 20px !important; /* Extra safety gap */
     display: inline-block !important;
 }
+
+/* --- MOBILE SOCIAL ICONS COMPACT FIX --- */
+@media (max-width: 768px) {
+    .social-row {
+        gap: 8px !important; /* Much tighter gap (was 20px) */
+        flex-wrap: wrap !important; /* Allows them to wrap if the phone is TINY */
+        justify-content: center !important; /* Centers them perfectly */
+        padding: 0 10px !important; /* Prevents touching screen edges */
+    }
+
+    .social-icon-btn {
+        width: 42px !important; /* Shrink button size (was 60px) */
+        height: 42px !important;
+        font-size: 1.1rem !important; /* Adjust icon size to fit */
+    }
+}
     </style>
 </head>
 <body>

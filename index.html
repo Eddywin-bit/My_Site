@@ -465,6 +465,36 @@ div[style*="background: #111"] p {
         font-weight: 800 !important;
     }
 }
+/* --- FINAL TYPOGRAPHY WEIGHT LIFT --- */
+
+/* 1. BEEF UP THE HERO TEXT (Hello I'm Edwin) */
+.hero-text h1 {
+    font-weight: 900 !important; /* Maximum Thickness */
+    letter-spacing: -1.5px !important; /* Tighter letters = More impact */
+    /* Optional: Make it slightly bigger on desktop if needed */
+    text-transform: none !important; /* Keeps "Hello" friendly, not shouting */
+}
+
+/* 2. BEEF UP THE "ARCHIVE/VAULT" SECTION */
+div[style*="background: #111"] h2 {
+    font-weight: 900 !important; /* Extra Bold */
+    font-size: 3.5rem !important; /* Make it massive */
+    text-transform: uppercase !important; /* Makes it feel architectural */
+    letter-spacing: 2px !important;
+    color: #ffffff !important; /* Ensure it pops */
+}
+
+/* 3. MOBILE ADJUSTMENTS FOR THICKER FONTS */
+@media (max-width: 768px) {
+    .hero-text h1 {
+        font-weight: 800 !important; /* Slightly less thick on mobile so it doesn't blob */
+        letter-spacing: -1px !important;
+    }
+    
+    div[style*="background: #111"] h2 {
+        font-size: 2.5rem !important; /* Balanced for phone screens */
+    }
+}
     </style>
 </head>
 <body>
@@ -564,7 +594,7 @@ div[style*="background: #111"] p {
         </div>
 
         <div class="reveal" style="background: #111; padding: 80px 5%; text-align: center;">
-            <h2 style="color: white;">The Archive</h2>
+            <h2 style="color: white;">The Vault</h2>
             <p style="color: #888; margin-bottom: 30px;">Explore 50+ Flyers, Brands, and Designs.</p>
             <a onclick="navigateTo('full-gallery')" class="btn" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">Open The Vault</a>
         </div>

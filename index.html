@@ -47,18 +47,6 @@
             cursor: text;
         }
 
-        /* --- 3. PRELOADER (New) --- */
-        .preloader {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center;
-            transition: transform 0.8s var(--ease-premium);
-        }
-        .preloader-text {
-            font-size: 2rem; font-weight: 800; letter-spacing: 5px; color: var(--accent-color);
-            animation: pulse 1.5s infinite;
-        }
-        .preloader.hide { transform: translateY(-100%); }
-        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
 
         /* --- 4. CUSTOM CURSOR (New) --- */
         .cursor-dot, .cursor-outline {
@@ -236,43 +224,51 @@
         /* 4. MOBILE ADJUSTMENTS (Keep text readable on phones) */
         /* --- MOBILE HERO: ROUNDED CINEMATIC BOX --- */
 /* --- FINAL MOBILE MASTER FIX --- */
+/* --- MOBILE HERO: ARTWORK PROFILE FIX --- */
 @media (max-width: 768px) {
-    /* 1. LAYOUT: Image Top, Text Bottom */
+    /* 1. LAYOUT */
     .hero-container {
-        padding-top: 30px !important;
+        padding-top: 20px !important;
         flex-direction: column-reverse; 
+        gap: 20px !important;
     }
 
-    /* 2. THE IMAGE: Rounded Cinematic Box */
+    /* 2. THE FRAME */
     .hero-image {
-        margin-bottom: 25px !important;
-        display: flex;
-        justify-content: center;
-        width: 100%;
+        width: 90% !important;
+        height: 450px !important; /* Made taller to fit the full artwork */
+        margin: 0 auto !important;
+        display: block !important;
+        border-radius: 20px !important;
+        overflow: hidden !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+        background: #f0f0f0; /* Matches the image background so it blends if aspect ratio differs */
     }
 
     .hero-image img {
-        border-radius: 20px !important; /* Smooth modern corners */
-        width: auto !important;
-        max-width: 90% !important; /* Breathing room on sides */
-        height: 400px !important; /* Balanced height */
-        object-fit: cover !important;
-        object-position: top center !important; /* Focus on face */
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important; /* Floating effect */
+        width: 100% !important;
+        height: 100% !important;
+        
+        /* 3. SHOW THE FULL ARTWORK (Critical Changes) */
+        object-fit: contain !important; /* 'Contain' ensures NO cropping happens */
+        object-position: center bottom !important; /* Anchors you to the bottom */
+        
+        /* 4. NO ZOOM */
+        transform: none !important; /* We disable the zoom so we can see the text */
+        border-radius: 0 !important;
     }
 
-    /* 3. THE TEXT: Smaller & Split Lines */
+    /* 3. THE TEXT */
     .hero-text {
         text-align: center !important;
-        padding: 0 15px !important;
+        padding: 0 10px !important;
     }
 
     .hero-text h1 {
-        /* This fixes the "Too Huge" issue */
-        font-size: 42px !important; /* Perfect mobile size (not 80px like desktop) */
+        font-size: 38px !important;
         line-height: 1.2 !important;
         color: #ffffff !important;
-        margin-bottom: 15px !important;
+        margin-bottom: 10px !important;
     }
 }
 
@@ -300,14 +296,95 @@
     color: #ffffff !important;
 }
 
+/* --- 1. CLOSE THE PREVIOUS BLOCK (Safety First) --- */
+}
+
+/* --- 2. DESKTOP: THE "FEATURED WORK" STYLE --- */
+@media (min-width: 769px) {
+    .hero-container {
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding-top: 0 !important;
+        max-width: 1400px !important; /* Ensures it spans the full premium width */
+    }
+    
+    /* THE BOX (Mimicking .p-img from Featured Works) */
+    .hero-image {
+        flex: 1.2 !important; /* 1.2 makes it WIDER than the text (which is 1) */
+        width: 55% !important; /* Forces it to take up more than half the screen */
+        margin: 0 !important;
+        display: block !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+    
+    /* THE IMAGE (Curved & Filling the Box) */
+    .hero-image img {
+        width: 100% !important; /* Fills the wide box completely */
+        height: auto !important;
+        max-height: 700px !important; /* Allows it to be tall and grand */
+        
+        /* THE CURVES YOU WANTED */
+        border-radius: 12px !important; /* Matches Featured Works exactly */
+        
+        /* USE 'COVER' TO FILL THE SHAPE (Like Featured Works) */
+        /* Note: If this cuts off text on your doodle, change to 'contain' */
+        object-fit: cover !important; 
+        
+        transform: none !important;
+    }
+    
+    .hero-text {
+        flex: 1 !important; /* Text takes slightly less space */
+        text-align: left !important;
+        padding-right: 60px !important; /* More breathing room */
+    }
+}
+
+/* --- 3. MOBILE: THE DOODLE FIX (Untouched) --- */
+@media (max-width: 768px) {
+    .hero-container {
+        padding-top: 20px !important;
+        flex-direction: column-reverse; 
+        gap: 20px !important;
+    }
+
+    .hero-image {
+        width: 90% !important;
+        height: 450px !important; 
+        margin: 0 auto !important;
+        display: block !important;
+        border-radius: 20px !important; 
+        overflow: hidden !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+        background: #f0f0f0; 
+    }
+
+    .hero-image img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: contain !important; 
+        object-position: center bottom !important;
+        transform: none !important; 
+        border-radius: 0 !important;
+    }
+
+    .hero-text {
+        text-align: center !important;
+        padding: 0 10px !important;
+    }
+
+    .hero-text h1 {
+        font-size: 38px !important;
+        line-height: 1.2 !important;
+        color: #ffffff !important;
+        margin-bottom: 10px !important;
+    }
+}
     </style>
 </head>
 <body>
-
-    <!-- 1. PRELOADER -->
-    <div class="preloader" id="preloader">
-        <div class="preloader-text">CEO GYASI</div>
-    </div>
 
     <!-- 2. CUSTOM CURSOR (Desktop Only) -->
     <div class="cursor-dot" data-cursor-dot></div>
@@ -359,7 +436,7 @@
                 <a onclick="navigateTo('full-gallery')" class="btn" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">View Full Archive</a>
             </div>
             <div class="hero-image">
-                <img src="Assets/1000007946.webp" alt="CEO Gyasi" style="max-height: 600px; object-fit: contain;">
+                <img src="Assets/Profile.webp" alt="CEO Gyasi;">
             </div>
         </div>
 
@@ -619,12 +696,6 @@
         function cursorHover() { document.body.classList.add('hovering'); }
         function cursorLeave() { document.body.classList.remove('hovering'); }
 
-        // 2. PRELOADER
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                document.getElementById('preloader').classList.add('hide');
-            }, 1500); // 1.5s delay
-        });
 
         // 3. SCROLL OBSERVER
         const observer = new IntersectionObserver((entries) => {

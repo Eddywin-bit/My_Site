@@ -63,8 +63,46 @@
         }
 
         /* --- 5. SCROLL REVEAL --- */
-        .reveal { opacity: 0; transform: translateY(50px); transition: all 1s var(--ease-premium); }
-        .reveal.active { opacity: 1; transform: translateY(0); }
+        /* --- FRAMER-STYLE ANIMATION ENGINE --- */
+
+/* 1. The Physics (Apple-style smooth motion) */
+:root {
+    --ease-framer: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 2. The Hidden State (Blurry & Small) */
+.reveal {
+    opacity: 0;
+    transform: translateY(40px) scale(0.96); /* Starts slightly lower and smaller */
+    filter: blur(10px); /* The "Un-blur" effect */
+    transition: all 0.8s var(--ease-framer); /* Smooth transition */
+    will-change: transform, opacity, filter;
+}
+
+/* 3. The Visible State (Sharp & Full Size) */
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+}
+
+/* --- STAGGERED DELAYS (The Waterfall Effect) --- */
+
+/* This targets the items in your Vault Grid */
+.masonry-item.reveal {
+    transition-delay: 0ms; 
+}
+
+/* item 2 waits 0.1s */
+.masonry-item.reveal:nth-child(2) { transition-delay: 100ms; }
+/* item 3 waits 0.2s */
+.masonry-item.reveal:nth-child(3) { transition-delay: 200ms; }
+/* item 4 waits 0.3s */
+.masonry-item.reveal:nth-child(4) { transition-delay: 300ms; }
+/* item 5 waits 0.4s */
+.masonry-item.reveal:nth-child(5) { transition-delay: 400ms; }
+/* item 6+ waits 0.5s */
+.masonry-item.reveal:nth-child(n+6) { transition-delay: 500ms; }
 
         /* --- 6. NAVIGATION --- */
         .navbar {
@@ -579,6 +617,38 @@ div[style*="background: #111"] h2 {
         margin-top: 5px !important; 
     }
 }
+/* --- OVERRIDE: FRAMER ANIMATION ENGINE --- */
+
+/* 1. The Physics (Smooth Apple-style ease) */
+:root {
+    --ease-framer: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 2. The New Hidden State (Blurry + Small) */
+.reveal {
+    opacity: 0 !important;
+    transform: translateY(40px) scale(0.96) !important; /* Starts lower & smaller */
+    filter: blur(10px) !important; /* The Framer Blur */
+    transition: all 0.8s var(--ease-framer) !important;
+    will-change: transform, opacity, filter;
+}
+
+/* 3. The New Visible State (Sharp + Full Size) */
+.reveal.active {
+    opacity: 1 !important;
+    transform: translateY(0) scale(1) !important;
+    filter: blur(0) !important;
+}
+
+/* --- STAGGERED DELAYS (The Waterfall Effect) --- */
+/* This makes the existing 'reveal' items pop in one by one */
+.masonry-item.reveal { transition-delay: 0ms; }
+.masonry-item.reveal:nth-child(2) { transition-delay: 100ms; }
+.masonry-item.reveal:nth-child(3) { transition-delay: 200ms; }
+.masonry-item.reveal:nth-child(4) { transition-delay: 300ms; }
+.masonry-item.reveal:nth-child(5) { transition-delay: 400ms; }
+.masonry-item.reveal:nth-child(n+6) { transition-delay: 500ms; }
+
     </style>
 </head>
 <body>

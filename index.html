@@ -611,6 +611,38 @@ div[style*="background: #111"] h2 {
         column-count: 1 !important;
     }
 }
+
+/* --- FIX: FEATURED WORKS MOBILE ALIGNMENT --- */
+@media (max-width: 768px) {
+    /* 1. Force all cards to stack the same way */
+    .project-card, 
+    .project-card:nth-child(even) { 
+        flex-direction: column !important; /* Image Top, Text Bottom */
+        align-items: flex-start !important; /* Aligns everything to the LEFT */
+        text-align: left !important; /* Forces text to start at the left edge */
+        gap: 20px !important;
+        margin-bottom: 60px !important;
+    }
+
+    /* 2. Reset the Text Container */
+    .p-info {
+        width: 100% !important;
+        padding: 0 10px !important; /* Adds tiny breathing room from screen edge */
+        text-align: left !important;
+    }
+
+    /* 3. Ensure the Category Label (Commercial/Academic) lines up */
+    .p-cat {
+        display: block !important;
+        margin-bottom: 10px !important;
+    }
+
+    /* 4. Ensure the Image fills the width */
+    .p-img {
+        width: 100% !important;
+        margin: 0 !important;
+    }
+}
     </style>
 </head>
 <body>

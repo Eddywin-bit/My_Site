@@ -579,6 +579,38 @@ div[style*="background: #111"] h2 {
         margin-top: 5px !important; 
     }
 }
+
+/* --- FIX: CASE STUDY MASONRY LAYOUT (Pinterest Style) --- */
+
+.case-gallery {
+    /* 1. Turn off the rigid Grid */
+    display: block !important; 
+    
+    /* 2. Turn on the Masonry Columns */
+    column-count: 2 !important; 
+    column-gap: 20px !important; 
+    
+    /* Optional: Restrict width so it doesn't get too wide on huge screens */
+    max-width: 1000px !important; 
+    margin: 0 auto 100px auto !important;
+}
+
+.case-gallery img {
+    /* 3. Make images act like bricks */
+    width: 100% !important;
+    height: auto !important;
+    margin-bottom: 20px !important; /* The gap between items */
+    break-inside: avoid !important; /* Prevents images from being cut in half */
+    display: block !important;
+    border-radius: 8px !important;
+}
+
+/* MOBILE: Stack them in 1 column */
+@media (max-width: 768px) {
+    .case-gallery {
+        column-count: 1 !important;
+    }
+}
     </style>
 </head>
 <body>
@@ -652,17 +684,24 @@ div[style*="background: #111"] h2 {
                 </div>
             </div>
 
-            <div class="project-card reveal" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">
-                <div class="p-img" onclick="navigateTo('case-study-knust')">
-                    <img src="Assets/GESS SEMINAR.webp">
-                </div>
-                <div class="p-info">
-                    <span class="p-cat">Academic Branding</span>
-                    <h3 style="color: white;"class="p-title">KNUST Engineering Seminar</h3>
-                    <p style="color:#888; margin-bottom: 20px;">Complete identity design for the annual summit.</p>
-                    <a onclick="navigateTo('case-study-knust')" class="btn btn-outline">View Case Study</a>
-                </div>
-            </div>
+            <!-- PROJECT 2: GEOBRIDGE (Replaces KNUST) -->
+<div class="project-card reveal" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">
+    <!-- 1. The Image (Links to details) -->
+    <div class="p-img" onclick="navigateTo('case-study-geobridge')">
+        <!-- Using the main blue flyer as the hero shot -->
+        <img src="Assets/geobridge-flyer.webp" alt="Geobridge Mentorship">
+    </div>
+    
+    <!-- 2. The Text -->
+    <div class="p-info">
+        <span class="p-cat">Academic Branding</span>
+        <h3 class="p-title">Geobridge Mentorship</h3>
+        <p style="color:#888; margin-bottom: 20px;">
+            Bridging the gap between academia and industry. A complete brand identity system for the Geological Engineering department's mentorship initiative.
+        </p>
+        <a onclick="navigateTo('case-study-geobridge')" class="btn btn-outline">View Case Study</a>
+    </div>
+</div>
 
             <div class="project-card reveal" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">
                 <div class="p-img" onclick="navigateTo('case-study-summit')">
@@ -844,16 +883,43 @@ div[style*="background: #111"] h2 {
         </div>
     </div>
 
-    <div id="case-study-knust" class="page-section">
-        <div style="padding: 0 5%;">
-            <span class="back-btn" onclick="navigateTo('home-page')">&larr; Back to Featured</span>
-            <div class="case-hero"><h1>KNUST Engineering Seminar</h1><p class="case-content">Engineering is about precision.</p></div>
-            <div class="case-gallery">
-                <img src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?q=80&w=1000" onclick="openLightbox(this.src)">
-                <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=1000" onclick="openLightbox(this.src)">
-            </div>
+    <!-- CASE STUDY: GEOBRIDGE -->
+<div id="case-study-geobridge" class="page-section">
+    <div style="padding: 0 5%;">
+        <span class="back-btn" onclick="navigateTo('home-page')">&larr; Back to Featured</span>
+        
+        <div class="case-hero">
+    <h1>Geobridge Mentorship</h1>
+    <div class="case-meta">
+        <span>Client: KNUST Geology</span>
+        <span>Role: Brand Identity Design</span>
+        <span>Year: 2024</span>
+    </div>
+    <p class="case-content">
+        Geobridge is a mentorship community designed to connect students with industry personnel and experienced mentors. 
+        <br><br>
+        My challenge was to create a brand identity that visualizes this connection. The resulting logo uses structural arches to symbolize the sturdy "bridge" students cross to transition from the classroom to their careers.
+    </p>
+</div>
+
+        <!-- THE GALLERY GRID (Showcasing all assets) -->
+        <div class="case-gallery" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+            
+            <!-- 1. The Brand Mark -->
+            <img src="Assets/geobridge-logo.webp" onclick="openLightbox(this.src)" alt="Logo Design" style="object-fit: contain; background: #fff; padding: 20px;">
+            
+            <!-- 2. The Launch Flyer -->
+            <img src="Assets/geobridge-flyer.webp" onclick="openLightbox(this.src)" alt="Main Flyer">
+            
+            <!-- 3. Spotlight Series (David) -->
+            <img src="Assets/geobridge-spotlight-david.webp" onclick="openLightbox(this.src)" alt="Alumni Spotlight">
+            
+            <!-- 4. Quote Series (Priscilla) -->
+            <img src="Assets/geobridge-quote-priscilla.webp" onclick="openLightbox(this.src)" alt="Leadership Quote">
+            
         </div>
     </div>
+</div>
 
     <div id="case-study-summit" class="page-section">
         <div style="padding: 0 5%;">

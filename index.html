@@ -31,8 +31,8 @@
               mono: ['Fira Code', 'monospace'],
             },
             animation: {
-              'fade-in': 'fadeIn 0.8s ease-out forwards',
-              'slide-up': 'slideUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+              'fade-in': 'fadeIn 0.5s ease-out forwards',
+              'slide-up': 'slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
               'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
             },
             keyframes: {
@@ -69,6 +69,12 @@
 
         /* PREVENT IMAGE DRAG */
         img { user-select: none; -webkit-user-drag: none; }
+        
+        /* FORCE OPAQUE MENU BACKGROUND */
+        #mobile-menu {
+            background-color: #000000 !important;
+            opacity: 1 !important;
+        }
     </style>
 
     <!-- AI LIBRARY -->
@@ -88,8 +94,8 @@
 
     <!-- ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ -->
     <!--                HOW TO EDIT THIS FILE                 -->
-    <!-- 1. Search for "USER EDIT" to find images/logos       -->
-    <!-- 2. Scroll to the bottom <script> to edit text/links  -->
+    <!-- 1. LOGO: Name your file "logo" (png, jpg, webp or svg) and put it next to this file. The code will find it. -->
+    <!-- 2. CONTENT: Scroll to the bottom <script> to edit text -->
     <!-- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ -->
 
     <!-- ========================================= -->
@@ -100,13 +106,13 @@
             
             <!-- LOGO -->
             <div class="flex items-center gap-3 cursor-pointer group" onclick="scrollToSection('hero')">
-                <div class="relative w-8 h-8 flex items-center justify-center">
-                    <!-- ▼▼▼ USER EDIT: LOGO HERE ▼▼▼ -->
-                    <!-- Change src="assets/logo.png" to your actual file path -->
-                    <img id="logo-img" src="assets/logo.png" alt="Eon" class="w-full h-full object-contain" onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='block'" />
-                    <i id="fallback-logo" data-lucide="gem" class="hidden w-5 h-5 text-brand-500"></i>
+                <div class="relative h-10 w-auto flex items-center justify-center">
+                    <!-- SMART LOGO LOADER: Will try logo.png, logo.jpg, logo.webp etc automatically -->
+                    <img id="logo-img" src="logo.png" alt="Eon" class="h-full w-auto object-contain" />
+                    <i id="fallback-logo" data-lucide="gem" class="hidden w-6 h-6 text-brand-500"></i>
                 </div>
-                <span class="text-lg md:text-xl font-display font-bold tracking-wide text-white">EON</span>
+                <!-- Brand Name (Hidden if logo loads, visible if text preferred) -->
+                <!-- <span class="text-lg md:text-xl font-display font-bold tracking-wide text-white">EON</span> -->
             </div>
 
             <!-- DESKTOP MENU -->
@@ -129,20 +135,6 @@
             <!-- MOBILE MENU BTN -->
             <button class="md:hidden text-white hover:text-brand-500 transition-colors" onclick="toggleMobileMenu()">
                 <i data-lucide="menu" class="w-6 h-6"></i>
-            </button>
-        </div>
-        
-        <!-- MOBILE OVERLAY (SOLID OPAQUE BACKGROUND) -->
-        <div id="mobile-menu" class="hidden fixed inset-0 bg-black z-[100] pt-20 px-6 animate-fade-in" style="background-color: #000000 !important;">
-            <div class="flex flex-col gap-6">
-                 <button onclick="scrollToSection('work'); toggleMobileMenu()" class="text-xl font-display font-medium text-gray-400 hover:text-white text-left transition-colors border-b border-white/10 pb-4">Work</button>
-                 <button onclick="scrollToSection('vault'); toggleMobileMenu()" class="text-xl font-display font-medium text-gray-400 hover:text-white text-left transition-colors border-b border-white/10 pb-4">The Vault</button>
-                 <button onclick="scrollToSection('about'); toggleMobileMenu()" class="text-xl font-display font-medium text-gray-400 hover:text-white text-left transition-colors border-b border-white/10 pb-4">About</button>
-                 <button onclick="scrollToSection('journal'); toggleMobileMenu()" class="text-xl font-display font-medium text-gray-400 hover:text-white text-left transition-colors border-b border-white/10 pb-4">Journal</button>
-                 <button onclick="scrollToSection('contact'); toggleMobileMenu()" class="mt-4 px-6 py-4 bg-white text-black font-bold text-center w-full uppercase tracking-widest text-xs">Book Session</button>
-            </div>
-            <button onclick="toggleMobileMenu()" class="absolute top-6 right-6 text-white p-2 hover:bg-white/10 rounded-full transition-colors">
-                <i data-lucide="x" class="w-8 h-8"></i>
             </button>
         </div>
     </nav>
@@ -211,13 +203,13 @@
     </section>
 
     <!-- PROJECT MODAL (CASE STUDY) - SOLID BACKGROUND -->
-    <div id="project-modal" class="hidden fixed inset-0 z-[60] bg-dark-950 overflow-y-auto animate-fade-in">
+    <div id="project-modal" class="hidden fixed inset-0 z-[60] bg-dark-950 overflow-y-auto animate-fade-in" style="background-color: #050505 !important;">
         <div class="fixed top-4 right-4 md:top-6 md:right-6 z-50">
             <button onclick="closeProjectModal()" class="p-2 md:p-3 bg-white text-black rounded-full hover:bg-brand-500 transition-colors shadow-lg group">
                 <i data-lucide="x" class="w-5 h-5 md:w-6 md:h-6 group-hover:rotate-90 transition-transform duration-300"></i>
             </button>
         </div>
-        <div id="modal-content" class="min-h-screen pb-20"></div>
+        <div id="modal-content" class="min-h-screen pb-20 bg-dark-950"></div>
     </div>
 
     <!-- ========================================= -->
@@ -239,7 +231,7 @@
             </div>
 
             <!-- PREVIEW GRID (Only shows 3-4 items) -->
-            <!-- FIXED: Changed 'md:masonry-grid' to 'md:block masonry-grid' so it actually displays on desktop -->
+            <!-- FIXED: Added 'block' to ensure it shows on MD screens -->
             <div id="vault-preview-grid" class="hidden md:block masonry-grid">
                 <!-- Desktop Masonry Injected by JS -->
             </div>
@@ -261,7 +253,7 @@
     <!-- ========================================= -->
     <!-- OVERLAY: FULL VAULT (SORTING SYSTEM)      -->
     <!-- ========================================= -->
-    <div id="full-vault-overlay" class="hidden fixed inset-0 z-[80] bg-dark-950 overflow-y-auto animate-fade-in">
+    <div id="full-vault-overlay" class="hidden fixed inset-0 z-[80] bg-dark-950 overflow-y-auto animate-fade-in" style="background-color: #050505 !important;">
         
         <!-- Sticky Filter Header -->
         <div class="sticky top-0 bg-dark-950 border-b border-white/10 z-50 px-4 py-4 md:px-6 md:py-6">
@@ -323,8 +315,8 @@
                 <!-- Image/Visual -->
                 <div class="w-full md:w-5/12 relative group">
                     <div class="aspect-[3/4] overflow-hidden relative max-w-sm mx-auto md:max-w-none">
-                        <!-- ▼▼▼ USER EDIT: PROFILE PIC ▼▼▼ -->
-                        <img src="assets/profile.jpg" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80'" alt="Edwin Gyasi Owusu" class="w-full h-full object-cover transition-all duration-1000 group-hover:scale-105" />
+                        <!-- ▼▼▼ USER EDIT: PROFILE PIC (Works with .jpg, .png, .webp) ▼▼▼ -->
+                        <img src="profile.jpg" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80'" alt="Edwin Gyasi Owusu" class="w-full h-full object-cover transition-all duration-1000 group-hover:scale-105" />
                         <div class="absolute inset-0 bg-black/10"></div>
                     </div>
                     <!-- Decoration -->
@@ -400,7 +392,7 @@
     </section>
 
     <!-- BLOG READING MODAL -->
-    <div id="blog-modal" class="hidden fixed inset-0 z-[100] bg-dark-950 overflow-y-auto animate-fade-in">
+    <div id="blog-modal" class="hidden fixed inset-0 z-[100] bg-dark-950 overflow-y-auto animate-fade-in" style="background-color: #050505 !important;">
          <div class="max-w-3xl mx-auto px-6 py-12 md:py-20">
              <button onclick="document.getElementById('blog-modal').classList.add('hidden'); document.body.style.overflow='auto';" class="mb-10 text-gray-500 hover:text-white flex items-center gap-2 text-xs uppercase tracking-widest sticky top-6 bg-dark-950 border border-white/10 py-3 px-6 rounded-full w-fit z-50 shadow-xl">
                  <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Journal
@@ -464,13 +456,29 @@
     <footer class="bg-dark-950 py-12 border-t border-white/5 text-center text-gray-600 text-xs md:text-sm">
         &copy; 2026 Eon Designs by Edwin Gyasi Owusu.
     </footer>
+    
+    <!-- ========================================= -->
+    <!-- MOBILE MENU OVERLAY (MOVED TO BODY ROOT)  -->
+    <!-- ========================================= -->
+    <div id="mobile-menu" class="hidden fixed inset-0 w-screen h-screen z-[9999] pt-20 px-6 animate-fade-in flex flex-col" style="background-color: #000000 !important; opacity: 1 !important;">
+        <button onclick="toggleMobileMenu()" class="absolute top-6 right-6 text-white p-2 hover:bg-white/10 rounded-full transition-colors z-[10000]">
+            <i data-lucide="x" class="w-8 h-8"></i>
+        </button>
+        <div class="flex flex-col gap-6 mt-10">
+             <button onclick="scrollToSection('work'); toggleMobileMenu()" class="text-xl font-display font-medium text-gray-400 hover:text-white text-left transition-colors border-b border-white/10 pb-4">Work</button>
+             <button onclick="scrollToSection('vault'); toggleMobileMenu()" class="text-xl font-display font-medium text-gray-400 hover:text-white text-left transition-colors border-b border-white/10 pb-4">The Vault</button>
+             <button onclick="scrollToSection('about'); toggleMobileMenu()" class="text-xl font-display font-medium text-gray-400 hover:text-white text-left transition-colors border-b border-white/10 pb-4">About</button>
+             <button onclick="scrollToSection('journal'); toggleMobileMenu()" class="text-xl font-display font-medium text-gray-400 hover:text-white text-left transition-colors border-b border-white/10 pb-4">Journal</button>
+             <button onclick="scrollToSection('contact'); toggleMobileMenu()" class="mt-4 px-6 py-4 bg-white text-black font-bold text-center w-full uppercase tracking-widest text-xs">Book Session</button>
+        </div>
+    </div>
 
     <!-- AI CHAT WIDGET -->
     <div id="ai-widget" class="fixed bottom-6 right-6 z-50">
         <button onclick="toggleChat()" id="chat-toggle" class="p-3 md:p-4 bg-black text-white border border-white/20 hover:border-white shadow-2xl transition-all duration-300 hover:scale-105">
             <i data-lucide="message-square" class="w-5 h-5 md:w-6 md:h-6"></i>
         </button>
-        <div id="chat-window" class="hidden fixed bottom-20 right-4 md:bottom-24 md:right-8 w-[90vw] md:w-[400px] h-[400px] md:h-[500px] bg-black border border-white/10 shadow-2xl flex flex-col animate-slide-up rounded-xl md:rounded-none overflow-hidden">
+        <div id="chat-window" class="hidden fixed bottom-20 right-4 md:bottom-24 md:right-8 w-[90vw] md:w-[400px] h-[400px] md:h-[500px] bg-black border border-white/10 shadow-2xl flex flex-col animate-slide-up rounded-xl md:rounded-none overflow-hidden z-[60]">
             <div class="bg-dark-900 p-4 border-b border-white/10 flex items-center gap-3">
                 <i data-lucide="sparkles" class="w-4 h-4 text-brand-500"></i>
                 <h3 class="text-white font-medium text-sm">Eon AI</h3>
@@ -490,6 +498,24 @@
     <!-- ========================================= -->
     <script type="module">
         import { GoogleGenAI } from "@google/genai";
+        
+        // --- SMART LOGO LOADER ---
+        // Automatically tries different file extensions if 'logo.png' isn't found
+        const logoImg = document.getElementById('logo-img');
+        const exts = ['png', 'jpg', 'jpeg', 'webp', 'svg'];
+        let extIndex = 0;
+        
+        logoImg.onerror = function() {
+            extIndex++;
+            if(extIndex < exts.length) {
+                logoImg.src = 'logo.' + exts[extIndex];
+            } else {
+                // If all fail, hide image and show icon
+                logoImg.style.display = 'none';
+                document.getElementById('fallback-logo').classList.remove('hidden');
+                document.getElementById('fallback-logo').style.display = 'block';
+            }
+        };
 
         // =================================================================
         // 1. DATA CONFIGURATION (EDIT YOUR CONTENT HERE)
@@ -499,12 +525,13 @@
         const GEMINI_API_KEY = ""; // Paste your AI Studio Key here
 
         // PROJECTS (CASE STUDIES)
+        // You can use ANY image format: .jpg, .png, .webp, .svg, .gif
         const projects = [
             {
                 id: 1,
                 title: 'Neon Horizon',
                 category: 'Brand Identity',
-                image: 'assets/projects/p1.jpg', // Change to your local path
+                image: 'assets/projects/p1.jpg', // Change to your file name
                 // Fallback for demo if local not found
                 fallbackImage: 'https://picsum.photos/1600/1200?random=1', 
                 client: 'Kojima Constructs',
@@ -522,7 +549,7 @@
                 id: 2,
                 title: 'Velvet Coffee',
                 category: 'Packaging',
-                image: 'assets/projects/p2.jpg',
+                image: 'assets/projects/p2.webp', // Can be .webp
                 fallbackImage: 'https://picsum.photos/1600/1200?random=2',
                 client: 'Velvet Roasters',
                 year: '2023',
@@ -536,7 +563,7 @@
                 id: 3,
                 title: 'Cipher Finance',
                 category: 'Web Design',
-                image: 'assets/projects/p3.jpg',
+                image: 'assets/projects/p3.png', // Can be .png
                 fallbackImage: 'https://picsum.photos/1600/1200?random=3',
                 client: 'Cipher Inc.',
                 year: '2024',
@@ -591,6 +618,11 @@
         let vaultItems = [];
 
         // --- AUTOMATIC GENERATOR (DELETE THIS LOOP WHEN YOU ADD REAL ITEMS) ---
+        // To add real items, just remove this loop and do:
+        // vaultItems = [
+        //    { id: 1, category: 'Food', title: 'Burger Ad', src: 'my-burger.jpg', full: 'my-burger.jpg' },
+        //    { id: 2, category: 'Logos', title: 'Tech Logo', src: 'logo-2.png', full: 'logo-2.png' },
+        // ];
         const vaultCats = ['Commercial', 'Food', 'Academic', 'Experimental', '3D Render'];
         for (let i = 1; i <= 55; i++) {
             const cat = vaultCats[Math.floor(Math.random() * vaultCats.length)];
@@ -742,7 +774,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="max-w-7xl mx-auto px-6 py-12 md:py-20">
+                <div class="max-w-7xl mx-auto px-6 py-12 md:py-20 bg-dark-950">
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12 md:mb-20 border-b border-white/10 pb-12">
                          <div><span class="text-gray-500 text-xs uppercase tracking-wider block mb-2">CLIENT</span><span class="text-white font-display text-base md:text-lg">${p.client}</span></div>
                          <div><span class="text-gray-500 text-xs uppercase tracking-wider block mb-2">YEAR</span><span class="text-white font-display text-base md:text-lg">${p.year}</span></div>
@@ -920,9 +952,11 @@
                 // Opening
                 if(!fromBackBtn) pushModalState('mobile-menu');
                 menu.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // Lock Body Scroll
             } else {
                 // Closing
                 menu.classList.add('hidden');
+                document.body.style.overflow = 'auto'; // Unlock Body Scroll
                 if(!fromBackBtn) window.history.back();
             }
         };

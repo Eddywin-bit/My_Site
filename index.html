@@ -643,6 +643,76 @@ div[style*="background: #111"] h2 {
         margin: 0 !important;
     }
 }
+/* --- 10x KINETIC TYPOGRAPHY HERO --- */
+
+/* 1. The Container */
+.type-hero {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 85vh; /* Takes up almost full screen */
+    padding-top: 100px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 2. The Massive Text */
+.massive-text {
+    font-size: clamp(5rem, 18vw, 20rem); /* Scales from Big to ENORMOUS */
+    font-weight: 900;
+    line-height: 0.85; /* Tighter stacking */
+    text-transform: uppercase;
+    letter-spacing: -0.05em; /* Tight interaction */
+    margin: 0;
+    
+    /* The Gradient (Silver/Gold Hybrid) */
+    background: linear-gradient(to bottom right, var(--text-primary) 0%, var(--text-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    
+    transition: transform 0.5s ease; /* Interactive movement */
+    cursor: default;
+}
+
+/* 3. Hover Effect (The "Kinetic" part) */
+.massive-text:hover {
+    transform: skewX(-10deg) translateX(20px); /* Leans forward when touched */
+    -webkit-text-fill-color: var(--accent-color); /* Turns Gold on hover */
+}
+
+/* 4. The Subtext (Bottom Right) */
+.hero-subtext {
+    position: absolute;
+    bottom: 50px;
+    right: 5%;
+    text-align: right;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* 5. Mobile Adjustment */
+@media (max-width: 768px) {
+    .type-hero {
+        align-items: center;
+        text-align: center;
+    }
+    .massive-text {
+        font-size: 22vw; /* Fill the width of the phone */
+        line-height: 0.9;
+    }
+    .massive-text:nth-child(2) {
+        margin-left: 0 !important; /* Center align on phone */
+    }
+    .hero-subtext {
+        position: relative;
+        bottom: auto;
+        right: auto;
+        margin-top: 50px;
+        text-align: center;
+    }
+}
     </style>
 </head>
 <body>
@@ -688,18 +758,19 @@ div[style*="background: #111"] h2 {
     <!-- ===================================================== -->
     <!-- PAGE 1: HOME                                          -->
     <!-- ===================================================== -->
-    <div id="home-page" class="page-section">
-        
-        <div class="hero-container reveal">
-            <div class="hero-text">
-                <h1 style="color: white;">Hello,<br>I'm <span style="color: var(--accent-color);">Edwin.</span></h1>
-                <p style="color: #aaa; max-width: 500px; margin-bottom: 30px;">Helping individuals and brands dominate their market through high-end design and strategic storytelling.</p>
-                <a onclick="navigateTo('full-gallery')" class="btn" onmouseenter="cursorHover()" onmouseleave="cursorLeave()">View Full Archive</a>
-            </div>
-            <div class="hero-image">
-                <img src="Assets/Profile.webp" alt="CEO Gyasi;">
-            </div>
-        </div>
+    <!-- 10x TYPE-ONLY HERO -->
+<div class="hero-container type-hero">
+    <div class="massive-text-wrapper">
+        <h1 class="massive-text reveal">EDWIN</h1>
+        <h1 class="massive-text reveal">GYASI</h1>
+    </div>
+    
+    <div class="hero-subtext reveal">
+        <p>Creative Director & Digital Architect<br>Based in Ghana.</p>
+        <!-- The "Scroll Down" Indicator -->
+        <div class="scroll-indicator">↓</div>
+    </div>
+</div>
 
         <div class="featured-wrapper">
             <h2 style="color: white;"class="section-title reveal">Featured Works</h2>

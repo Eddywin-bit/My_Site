@@ -60,8 +60,9 @@
         .masonry-grid { column-count: 1; column-gap: 2rem; }
         @media (min-width: 768px) { .masonry-grid { column-count: 3; } }
         
-        .masonry-grid-full { column-count: 2; column-gap: 1.5rem; }
-        @media (min-width: 768px) { .masonry-grid-full { column-count: 4; } }
+        /* Mobile: 2 columns for full vault looks better/more pro than 1 massive column */
+        .masonry-grid-full { column-count: 2; column-gap: 1rem; }
+        @media (min-width: 768px) { .masonry-grid-full { column-count: 4; column-gap: 1.5rem; } }
         @media (min-width: 1280px) { .masonry-grid-full { column-count: 5; } }
         
         .break-inside { break-inside: avoid; margin-bottom: 1.5rem; }
@@ -85,10 +86,16 @@
 </head>
 <body class="antialiased selection:bg-brand-500 selection:text-black">
 
+    <!-- ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ -->
+    <!--                HOW TO EDIT THIS FILE                 -->
+    <!-- 1. Search for "USER EDIT" to find images/logos       -->
+    <!-- 2. Scroll to the bottom <script> to edit text/links  -->
+    <!-- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ -->
+
     <!-- ========================================= -->
     <!-- SECTION: NAVIGATION                       -->
     <!-- ========================================= -->
-    <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-8">
+    <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-6 md:py-8 bg-dark-950/80 backdrop-blur-md border-b border-white/5">
         <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
             
             <!-- LOGO -->
@@ -99,7 +106,7 @@
                     <img id="logo-img" src="assets/logo.png" alt="Eon" class="w-full h-full object-contain" onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='block'" />
                     <i id="fallback-logo" data-lucide="gem" class="hidden w-5 h-5 text-brand-500"></i>
                 </div>
-                <span class="text-xl font-display font-bold tracking-wide text-white">EON</span>
+                <span class="text-lg md:text-xl font-display font-bold tracking-wide text-white">EON</span>
             </div>
 
             <!-- DESKTOP MENU -->
@@ -109,6 +116,9 @@
                 </button>
                 <button onclick="scrollToSection('vault')" class="nav-link text-[10px] uppercase tracking-[0.2em] font-medium text-gray-500 hover:text-white transition-colors relative group">
                     The Vault <span class="absolute -bottom-2 left-0 w-0 h-[1px] bg-brand-500 transition-all group-hover:w-full"></span>
+                </button>
+                <button onclick="scrollToSection('about')" class="nav-link text-[10px] uppercase tracking-[0.2em] font-medium text-gray-500 hover:text-white transition-colors relative group">
+                    About <span class="absolute -bottom-2 left-0 w-0 h-[1px] bg-brand-500 transition-all group-hover:w-full"></span>
                 </button>
                 <button onclick="scrollToSection('journal')" class="nav-link text-[10px] uppercase tracking-[0.2em] font-medium text-gray-500 hover:text-white transition-colors relative group">
                     Journal <span class="absolute -bottom-2 left-0 w-0 h-[1px] bg-brand-500 transition-all group-hover:w-full"></span>
@@ -122,15 +132,16 @@
             </button>
         </div>
         
-        <!-- MOBILE OVERLAY -->
-        <div id="mobile-menu" class="hidden fixed inset-0 bg-dark-950 z-40 pt-32 px-6 animate-fade-in">
-            <div class="flex flex-col gap-8">
-                 <button onclick="scrollToSection('work'); toggleMobileMenu()" class="text-4xl font-display font-medium text-gray-500 hover:text-white text-left transition-colors">Work</button>
-                 <button onclick="scrollToSection('vault'); toggleMobileMenu()" class="text-4xl font-display font-medium text-gray-500 hover:text-white text-left transition-colors">The Vault</button>
-                 <button onclick="scrollToSection('journal'); toggleMobileMenu()" class="text-4xl font-display font-medium text-gray-500 hover:text-white text-left transition-colors">Journal</button>
-                 <button onclick="scrollToSection('contact'); toggleMobileMenu()" class="mt-8 px-6 py-4 bg-white text-black font-bold text-center w-full uppercase tracking-widest text-xs">Book Session</button>
+        <!-- MOBILE OVERLAY (SOLID OPAQUE BACKGROUND) -->
+        <div id="mobile-menu" class="hidden fixed inset-0 bg-black z-[100] pt-20 px-6 animate-fade-in" style="background-color: #000000 !important;">
+            <div class="flex flex-col gap-6">
+                 <button onclick="scrollToSection('work'); toggleMobileMenu()" class="text-xl font-display font-medium text-gray-400 hover:text-white text-left transition-colors border-b border-white/10 pb-4">Work</button>
+                 <button onclick="scrollToSection('vault'); toggleMobileMenu()" class="text-xl font-display font-medium text-gray-400 hover:text-white text-left transition-colors border-b border-white/10 pb-4">The Vault</button>
+                 <button onclick="scrollToSection('about'); toggleMobileMenu()" class="text-xl font-display font-medium text-gray-400 hover:text-white text-left transition-colors border-b border-white/10 pb-4">About</button>
+                 <button onclick="scrollToSection('journal'); toggleMobileMenu()" class="text-xl font-display font-medium text-gray-400 hover:text-white text-left transition-colors border-b border-white/10 pb-4">Journal</button>
+                 <button onclick="scrollToSection('contact'); toggleMobileMenu()" class="mt-4 px-6 py-4 bg-white text-black font-bold text-center w-full uppercase tracking-widest text-xs">Book Session</button>
             </div>
-            <button onclick="toggleMobileMenu()" class="absolute top-8 right-6 text-white p-2">
+            <button onclick="toggleMobileMenu()" class="absolute top-6 right-6 text-white p-2 hover:bg-white/10 rounded-full transition-colors">
                 <i data-lucide="x" class="w-8 h-8"></i>
             </button>
         </div>
@@ -142,57 +153,68 @@
     <section id="hero" class="min-h-screen flex items-center justify-center relative overflow-hidden pt-20">
         <!-- Parallax Background -->
         <div id="hero-bg" class="absolute top-0 left-0 w-full h-full bg-dark-950 pointer-events-none z-0">
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-500/5 rounded-full blur-[150px] animate-pulse-slow"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-brand-500/5 rounded-full blur-[100px] md:blur-[150px] animate-pulse-slow"></div>
+        </div>
+        
+        <!-- ABSTRACT LINES (BACKGROUND ONLY) -->
+        <div class="absolute inset-0 pointer-events-none opacity-[0.05] z-0 flex items-center justify-center overflow-hidden">
+             <svg class="w-[120%] h-[120%] animate-pulse-slow" viewBox="0 0 200 200" preserveAspectRatio="none">
+                 <path d="M-50 100 C 50 0, 150 200, 250 100" stroke="white" stroke-width="0.5" fill="none" />
+                 <path d="M-50 120 C 50 20, 150 220, 250 120" stroke="white" stroke-width="0.3" fill="none" />
+                 <path d="M-50 80 C 50 -20, 150 180, 250 80" stroke="white" stroke-width="0.3" fill="none" />
+             </svg>
         </div>
 
         <div id="hero-content" class="max-w-7xl mx-auto px-6 text-center z-10 relative">
-            <div class="inline-block mb-10 animate-fade-in opacity-0" style="animation-delay: 0.2s">
-                <span class="py-2 px-4 border border-brand-500/30 rounded-full text-brand-500 text-xs tracking-[0.3em] uppercase backdrop-blur-md font-medium">Portfolio 2026</span>
+            <div class="inline-block mb-8 md:mb-10 animate-fade-in opacity-0" style="animation-delay: 0.2s">
+                <span class="py-2 px-4 border border-brand-500/30 rounded-full text-brand-500 text-[10px] md:text-xs tracking-[0.2em] md:tracking-[0.3em] uppercase backdrop-blur-md font-medium">Portfolio 2026</span>
             </div>
             
-            <!-- Mobile Text Size Optimized -->
-            <h1 class="text-4xl md:text-7xl lg:text-9xl font-display font-medium text-white mb-8 leading-tight animate-slide-up opacity-0" style="animation-delay: 0.3s">
+            <!-- Mobile Font Sized Correctly -->
+            <h1 class="text-4xl sm:text-5xl md:text-7xl lg:text-9xl font-display font-medium text-white mb-6 md:mb-8 leading-[1.1] md:leading-tight animate-slide-up opacity-0" style="animation-delay: 0.3s">
                 Edwin Gyasi Owusu.
             </h1>
             
-            <p class="text-gray-400 max-w-xl mx-auto text-base md:text-lg leading-relaxed mb-12 font-light animate-slide-up opacity-0" style="animation-delay: 0.5s">
+            <p class="text-gray-400 max-w-xl mx-auto text-sm md:text-lg leading-relaxed mb-10 md:mb-12 font-light animate-slide-up opacity-0 px-4 md:px-0" style="animation-delay: 0.5s">
                 Senior Graphic Designer & Art Director. <br/>
-                Crafting <span class="text-brand-500 italic font-display text-xl">timeless</span> visual identities.
+                Crafting <span class="text-brand-500 italic font-display text-lg md:text-xl">timeless</span> visual identities.
             </p>
             
-            <div class="flex flex-col md:flex-row gap-6 justify-center items-center animate-slide-up opacity-0" style="animation-delay: 0.7s">
-               <button onclick="scrollToSection('work')" class="px-10 py-4 bg-brand-500 text-dark-950 text-xs font-bold tracking-widest uppercase hover:bg-white transition-all duration-300 min-w-[160px] shadow-[0_0_20px_rgba(224,212,197,0.2)]">Selected Works</button>
-               <button onclick="scrollToSection('vault')" class="px-10 py-4 border border-white/20 text-white text-xs font-bold tracking-widest uppercase hover:border-brand-500 hover:text-brand-500 transition-all duration-300 min-w-[160px]">The Vault</button>
+            <div class="flex flex-col md:flex-row gap-4 md:gap-6 justify-center items-center animate-slide-up opacity-0" style="animation-delay: 0.7s">
+               <button onclick="scrollToSection('work')" class="w-full md:w-auto px-10 py-4 bg-brand-500 text-dark-950 text-xs font-bold tracking-widest uppercase hover:bg-white transition-all duration-300 min-w-[160px] shadow-[0_0_20px_rgba(224,212,197,0.2)]">Selected Works</button>
+               <button onclick="scrollToSection('vault')" class="w-full md:w-auto px-10 py-4 border border-white/20 text-white text-xs font-bold tracking-widest uppercase hover:border-brand-500 hover:text-brand-500 transition-all duration-300 min-w-[160px]">The Vault</button>
             </div>
         </div>
 
-        <!-- BOUNCING ARROW (Restored) -->
-        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce cursor-pointer z-20 hover:text-brand-500 text-white transition-colors p-4" onclick="scrollToSection('work')">
-            <i data-lucide="arrow-down" class="w-6 h-6"></i>
+        <!-- BOUNCING ARROW (Centered Flex Container) -->
+        <div class="absolute bottom-6 md:bottom-8 w-full flex justify-center z-20 pointer-events-none">
+            <div class="animate-bounce cursor-pointer hover:text-brand-500 text-white transition-colors p-4 pointer-events-auto" onclick="scrollToSection('work')">
+                <i data-lucide="arrow-down" class="w-5 h-5 md:w-6 md:h-6"></i>
+            </div>
         </div>
     </section>
 
     <!-- ========================================= -->
     <!-- SECTION: SELECTED WORKS (PROJECTS)        -->
     <!-- ========================================= -->
-    <section id="work" class="py-32 bg-dark-900 relative">
+    <section id="work" class="py-20 md:py-32 bg-dark-900 relative">
         <div class="max-w-7xl mx-auto px-6 relative z-10">
-            <div class="flex justify-between items-end mb-24 border-b border-white/5 pb-8">
+            <div class="flex justify-between items-end mb-16 md:mb-24 border-b border-white/5 pb-8">
                 <div>
                     <h2 class="text-3xl md:text-6xl font-display font-medium text-white mb-2">Selected Works</h2>
                     <p class="text-gray-500 font-light text-sm md:text-base">Curated projects from the last 12 months.</p>
                 </div>
                 <span class="hidden md:block text-brand-500/50 text-sm font-mono">01 — 03</span>
             </div>
-            <div id="projects-container" class="space-y-40"></div>
+            <div id="projects-container" class="space-y-24 md:space-y-40"></div>
         </div>
     </section>
 
     <!-- PROJECT MODAL (CASE STUDY) - SOLID BACKGROUND -->
     <div id="project-modal" class="hidden fixed inset-0 z-[60] bg-dark-950 overflow-y-auto animate-fade-in">
-        <div class="fixed top-6 right-6 z-50">
-            <button onclick="closeProjectModal()" class="p-3 bg-white text-black rounded-full hover:bg-brand-500 transition-colors shadow-lg group">
-                <i data-lucide="x" class="w-6 h-6 group-hover:rotate-90 transition-transform duration-300"></i>
+        <div class="fixed top-4 right-4 md:top-6 md:right-6 z-50">
+            <button onclick="closeProjectModal()" class="p-2 md:p-3 bg-white text-black rounded-full hover:bg-brand-500 transition-colors shadow-lg group">
+                <i data-lucide="x" class="w-5 h-5 md:w-6 md:h-6 group-hover:rotate-90 transition-transform duration-300"></i>
             </button>
         </div>
         <div id="modal-content" class="min-h-screen pb-20"></div>
@@ -201,28 +223,34 @@
     <!-- ========================================= -->
     <!-- SECTION: THE VAULT (PREVIEW)              -->
     <!-- ========================================= -->
-    <section id="vault" class="py-32 bg-dark-950 relative overflow-hidden">
+    <section id="vault" class="py-20 md:py-32 bg-dark-950 relative overflow-hidden">
         <div class="max-w-7xl mx-auto px-6 relative z-10">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 md:mb-16 gap-6">
                 <div>
                     <div class="flex items-center gap-2 text-brand-500 mb-4">
                         <i data-lucide="lock" class="w-3 h-3"></i>
-                        <span class="text-[10px] font-mono uppercase tracking-[0.2em]">Restricted Access</span>
+                        <span class="text-[10px] font-mono uppercase tracking-[0.2em]">Concept Archive</span>
                     </div>
                     <h2 class="text-3xl md:text-6xl font-display font-medium tracking-tight text-white">The Vault</h2>
                 </div>
-                <p class="text-gray-400 max-w-sm text-sm leading-relaxed text-right md:text-left font-light">
+                <p class="text-gray-400 max-w-sm text-sm leading-relaxed text-left md:text-left font-light">
                     Internal design repository. 50+ raw outputs, daily renders, and visual experiments. 
                 </p>
             </div>
 
             <!-- PREVIEW GRID (Only shows 3-4 items) -->
-            <div id="vault-preview-grid" class="masonry-grid">
-                <!-- Injected by JS -->
+            <!-- FIXED: Changed 'md:masonry-grid' to 'md:block masonry-grid' so it actually displays on desktop -->
+            <div id="vault-preview-grid" class="hidden md:block masonry-grid">
+                <!-- Desktop Masonry Injected by JS -->
+            </div>
+            
+            <!-- MOBILE GRID (2 Columns for optimized size) -->
+            <div id="vault-preview-grid-mobile" class="md:hidden grid grid-cols-2 gap-4">
+                 <!-- Mobile Items Injected by JS -->
             </div>
 
-            <div class="mt-24 text-center">
-                <button onclick="openFullVault()" class="group inline-flex items-center gap-3 px-12 py-4 border border-white/10 rounded-none text-gray-400 hover:text-brand-500 hover:border-brand-500 transition-all duration-500">
+            <div class="mt-16 md:mt-24 text-center">
+                <button onclick="openFullVault()" class="w-full md:w-auto group inline-flex items-center justify-center gap-3 px-12 py-4 border border-white/10 rounded-none text-gray-400 hover:text-brand-500 hover:border-brand-500 transition-all duration-500">
                     <i data-lucide="grid" class="w-4 h-4 group-hover:text-brand-500 transition-colors"></i>
                     <span class="text-xs tracking-[0.2em] uppercase">Load All Artifacts</span>
                 </button>
@@ -236,11 +264,17 @@
     <div id="full-vault-overlay" class="hidden fixed inset-0 z-[80] bg-dark-950 overflow-y-auto animate-fade-in">
         
         <!-- Sticky Filter Header -->
-        <div class="sticky top-0 bg-dark-950 border-b border-white/10 z-50 px-6 py-6">
-             <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-                 <div>
-                     <h2 class="text-2xl font-display text-white">The Archive</h2>
-                     <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Total Artifacts: <span id="artifact-count" class="text-white">0</span></p>
+        <div class="sticky top-0 bg-dark-950 border-b border-white/10 z-50 px-4 py-4 md:px-6 md:py-6">
+             <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6">
+                 <div class="w-full md:w-auto flex justify-between items-center">
+                     <div>
+                        <h2 class="text-xl md:text-2xl font-display text-white">The Archive</h2>
+                        <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Total Artifacts: <span id="artifact-count" class="text-white">0</span></p>
+                     </div>
+                     <!-- Mobile Close Button (Visible only on small screens) -->
+                     <button onclick="closeFullVault()" class="md:hidden p-2 text-gray-400">
+                         <i data-lucide="x" class="w-5 h-5"></i>
+                     </button>
                  </div>
                  
                  <!-- FILTER BUTTONS -->
@@ -248,14 +282,15 @@
                      <!-- Buttons injected by JS (All, Commercial, Food, etc) -->
                  </div>
 
-                 <button onclick="closeFullVault()" class="flex items-center gap-2 text-gray-400 hover:text-white uppercase text-[10px] tracking-widest group">
+                 <!-- Desktop Close Button -->
+                 <button onclick="closeFullVault()" class="hidden md:flex items-center gap-2 text-gray-400 hover:text-white uppercase text-[10px] tracking-widest group">
                      Close <i data-lucide="x" class="w-4 h-4 group-hover:rotate-90 transition-transform"></i>
                  </button>
              </div>
         </div>
 
         <!-- Full Grid -->
-        <div class="max-w-[1920px] mx-auto p-6 md:p-12">
+        <div class="max-w-[1920px] mx-auto p-4 md:p-12">
             <div id="full-vault-grid" class="masonry-grid-full">
                 <!-- All 50+ items injected here -->
             </div>
@@ -264,14 +299,14 @@
 
     <!-- LIGHTBOX -->
     <div id="lightbox" class="hidden fixed inset-0 z-[90] bg-black flex items-center justify-center p-4 animate-fade-in" onclick="closeLightbox()">
-        <button class="absolute top-6 right-6 text-white hover:text-brand-500 transition-colors p-2" onclick="closeLightbox()">
+        <button class="absolute top-4 right-4 md:top-6 md:right-6 text-white hover:text-brand-500 transition-colors p-2" onclick="closeLightbox()">
             <i data-lucide="x" class="w-8 h-8"></i>
         </button>
-        <div class="max-w-7xl max-h-[90vh] relative" onclick="event.stopPropagation()">
-            <img id="lightbox-img" src="" alt="" class="max-w-full max-h-[85vh] object-contain mx-auto" />
-            <div class="mt-4 flex justify-between items-center text-white">
+        <div class="max-w-7xl max-h-[90vh] relative w-full" onclick="event.stopPropagation()">
+            <img id="lightbox-img" src="" alt="" class="w-full max-h-[70vh] md:max-h-[85vh] object-contain mx-auto" />
+            <div class="mt-4 flex flex-col md:flex-row justify-between items-start md:items-center text-white gap-2">
                 <div>
-                    <h3 id="lightbox-title" class="text-3xl font-display font-medium italic"></h3>
+                    <h3 id="lightbox-title" class="text-2xl md:text-3xl font-display font-medium italic"></h3>
                     <p id="lightbox-cat" class="text-sm text-brand-500 font-mono mt-1"></p>
                 </div>
             </div>
@@ -281,32 +316,31 @@
     <!-- ========================================= -->
     <!-- SECTION: ABOUT                            -->
     <!-- ========================================= -->
-    <section id="about" class="py-32 bg-dark-950 border-t border-white/5">
+    <section id="about" class="py-20 md:py-32 bg-dark-950 border-t border-white/5">
         <div class="max-w-7xl mx-auto px-6">
-            <div class="flex flex-col md:flex-row gap-20 items-start">
+            <div class="flex flex-col md:flex-row gap-12 md:gap-20 items-start">
                 
                 <!-- Image/Visual -->
                 <div class="w-full md:w-5/12 relative group">
-                    <div class="aspect-[3/4] overflow-hidden relative">
+                    <div class="aspect-[3/4] overflow-hidden relative max-w-sm mx-auto md:max-w-none">
                         <!-- ▼▼▼ USER EDIT: PROFILE PIC ▼▼▼ -->
                         <img src="assets/profile.jpg" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80'" alt="Edwin Gyasi Owusu" class="w-full h-full object-cover transition-all duration-1000 group-hover:scale-105" />
                         <div class="absolute inset-0 bg-black/10"></div>
                     </div>
                     <!-- Decoration -->
-                    <div class="absolute -bottom-4 -right-4 w-full h-full border border-brand-500/20 -z-10 group-hover:translate-x-2 group-hover:translate-y-2 transition-transform duration-500"></div>
+                    <div class="absolute -bottom-4 -right-4 w-full h-full border border-brand-500/20 -z-10 group-hover:translate-x-2 group-hover:translate-y-2 transition-transform duration-500 hidden md:block"></div>
                 </div>
 
                 <!-- Content -->
                 <div class="w-full md:w-7/12">
-                    <span class="text-brand-500 font-mono text-xs tracking-[0.2em] uppercase mb-6 block">The Designer</span>
+                    <span class="text-brand-500 font-mono text-xs tracking-[0.2em] uppercase mb-4 md:mb-6 block">The Designer</span>
                     
-                    <!-- OPTIMIZED FONT SIZE: Removed 6xl for reduced size -->
-                    <h2 class="text-3xl md:text-5xl font-display font-medium tracking-tight text-white mb-8">
+                    <!-- OPTIMIZED FONT SIZE FOR MOBILE -->
+                    <h2 class="text-3xl md:text-5xl font-display font-medium tracking-tight text-white mb-6 md:mb-8">
                         Edwin Gyasi <br/> Owusu.
                     </h2>
                     
-                    <!-- OPTIMIZED BODY TEXT: text-base instead of text-lg -->
-                    <div class="space-y-6 text-gray-400 text-base leading-relaxed font-light">
+                    <div class="space-y-6 text-gray-400 text-sm md:text-base leading-relaxed font-light">
                         <p>
                             I established <span class="text-white font-medium">Eon Designs</span> with a singular vision: to bridge the gap between functional utility and pure artistic expression.
                         </p>
@@ -356,17 +390,16 @@
     <!-- ========================================= -->
     <!-- SECTION: JOURNAL (BLOG)                   -->
     <!-- ========================================= -->
-    <section id="journal" class="py-32 bg-dark-900 border-t border-white/5">
+    <section id="journal" class="py-20 md:py-32 bg-dark-900 border-t border-white/5">
         <div class="max-w-7xl mx-auto px-6">
-             <h2 class="text-3xl md:text-5xl font-display font-medium text-white mb-16">Journal</h2>
+             <h2 class="text-3xl md:text-5xl font-display font-medium text-white mb-10 md:mb-16">Journal</h2>
              <div id="blog-grid" class="grid grid-cols-1 md:grid-cols-3 gap-10">
                  <!-- Injected by JS -->
              </div>
         </div>
     </section>
 
-    <!-- BLOG READING MODAL (SOLID BACKGROUND = NEW PAGE FEEL) -->
-    <!-- OPAQUE BACKGROUND: bg-dark-950, No Blur -->
+    <!-- BLOG READING MODAL -->
     <div id="blog-modal" class="hidden fixed inset-0 z-[100] bg-dark-950 overflow-y-auto animate-fade-in">
          <div class="max-w-3xl mx-auto px-6 py-12 md:py-20">
              <button onclick="document.getElementById('blog-modal').classList.add('hidden'); document.body.style.overflow='auto';" class="mb-10 text-gray-500 hover:text-white flex items-center gap-2 text-xs uppercase tracking-widest sticky top-6 bg-dark-950 border border-white/10 py-3 px-6 rounded-full w-fit z-50 shadow-xl">
@@ -374,11 +407,11 @@
              </button>
              
              <span id="blog-modal-date" class="text-brand-500 font-mono text-xs mb-4 block"></span>
-             <h1 id="blog-modal-title" class="text-3xl md:text-6xl font-display text-white mb-10 leading-tight"></h1>
+             <h1 id="blog-modal-title" class="text-2xl md:text-6xl font-display text-white mb-8 md:mb-10 leading-tight"></h1>
              <img id="blog-modal-img" src="" class="w-full h-auto mb-10 opacity-100 rounded-sm" />
              
              <!-- Article Body -->
-             <div id="blog-modal-body" class="prose prose-invert prose-lg text-gray-300 font-light leading-loose pb-20">
+             <div id="blog-modal-body" class="prose prose-invert prose-base md:prose-lg text-gray-300 font-light leading-loose pb-20">
                  <!-- Content Injected -->
              </div>
          </div>
@@ -387,7 +420,7 @@
     <!-- ========================================= -->
     <!-- SECTION: CONTACT                          -->
     <!-- ========================================= -->
-    <section id="contact" class="py-32 bg-dark-950 border-t border-white/5">
+    <section id="contact" class="py-20 md:py-32 bg-dark-950 border-t border-white/5">
         <div class="max-w-7xl mx-auto px-6">
              <div class="grid grid-cols-1 lg:grid-cols-5 gap-16">
                  <div class="lg:col-span-2">
@@ -398,25 +431,28 @@
                          <div class="w-10 h-10 border border-white/10 flex items-center justify-center group-hover:bg-brand-500 group-hover:text-black transition-all">
                              <i data-lucide="mail" class="w-4 h-4"></i>
                          </div>
-                         <span class="text-lg font-display">hello@eondesigns.com</span>
+                         <span class="text-base md:text-lg font-display">hello@eondesigns.com</span>
                      </a>
 
                      <!-- ▼▼▼ SOCIAL ICONS (EDIT HERE) ▼▼▼ -->
-                     <div class="flex gap-4 mt-8">
-                         <a href="https://pinterest.com" target="_blank" class="p-3 border border-white/10 text-gray-400 hover:text-black hover:bg-brand-500 hover:border-brand-500 transition-all"><i data-lucide="pin" class="w-4 h-4"></i></a>
+                     <div class="flex gap-3 md:gap-4 mt-8">
+                         <a href="https://pinterest.com" target="_blank" class="p-3 border border-white/10 text-gray-400 hover:text-black hover:bg-brand-500 hover:border-brand-500 transition-all flex items-center justify-center">
+                             <!-- PINTEREST SVG LOGO (FIXED) -->
+                             <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.399.165-1.487-.69-2.425-2.857-2.425-4.587 0-3.743 2.718-7.178 7.848-7.178 4.125 0 7.325 2.946 7.325 6.883 0 4.116-2.596 7.432-6.197 7.432-1.213 0-2.352-.629-2.738-1.375 0 0-.599 2.286-.744 2.83-.268 1.025-1.001 2.302-1.492 3.076 1.12.333 2.308.513 3.541.513 6.627 0 12.001-5.367 12.001-12.001 0-6.627-5.373-12.001-12.001-12.001z"/></svg>
+                         </a>
                          <a href="https://instagram.com" target="_blank" class="p-3 border border-white/10 text-gray-400 hover:text-black hover:bg-brand-500 hover:border-brand-500 transition-all"><i data-lucide="instagram" class="w-4 h-4"></i></a>
                          <a href="https://twitter.com" target="_blank" class="p-3 border border-white/10 text-gray-400 hover:text-black hover:bg-brand-500 hover:border-brand-500 transition-all"><i data-lucide="twitter" class="w-4 h-4"></i></a>
                          <a href="https://facebook.com" target="_blank" class="p-3 border border-white/10 text-gray-400 hover:text-black hover:bg-brand-500 hover:border-brand-500 transition-all"><i data-lucide="facebook" class="w-4 h-4"></i></a>
                      </div>
                  </div>
 
-                 <div class="lg:col-span-3 bg-dark-900 p-8 md:p-12 border border-white/5">
+                 <div class="lg:col-span-3 bg-dark-900 p-6 md:p-12 border border-white/5">
                      <form onsubmit="handleFormSubmit(event)" class="space-y-10">
                          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                             <input type="text" required class="bg-transparent border-b border-white/10 py-4 text-white focus:border-brand-500 outline-none font-display text-xl transition-all" placeholder="Your Name" />
-                             <input type="email" required class="bg-transparent border-b border-white/10 py-4 text-white focus:border-brand-500 outline-none font-display text-xl transition-all" placeholder="Email Address" />
+                             <input type="text" required class="bg-transparent border-b border-white/10 py-4 text-white focus:border-brand-500 outline-none font-display text-lg md:text-xl transition-all w-full" placeholder="Your Name" />
+                             <input type="email" required class="bg-transparent border-b border-white/10 py-4 text-white focus:border-brand-500 outline-none font-display text-lg md:text-xl transition-all w-full" placeholder="Email Address" />
                          </div>
-                         <textarea rows="3" class="w-full bg-transparent border-b border-white/10 py-4 text-white focus:border-brand-500 outline-none font-display text-xl resize-none transition-all" placeholder="Project Goals..."></textarea>
+                         <textarea rows="3" class="w-full bg-transparent border-b border-white/10 py-4 text-white focus:border-brand-500 outline-none font-display text-lg md:text-xl resize-none transition-all" placeholder="Project Goals..."></textarea>
                          <button type="submit" id="submit-btn" class="px-10 py-5 bg-brand-500 text-dark-950 font-bold uppercase tracking-widest text-xs hover:bg-white transition-all w-full md:w-auto">Book Session</button>
                      </form>
                  </div>
@@ -425,16 +461,16 @@
     </section>
 
     <!-- FOOTER -->
-    <footer class="bg-dark-950 py-12 border-t border-white/5 text-center text-gray-600 text-sm">
+    <footer class="bg-dark-950 py-12 border-t border-white/5 text-center text-gray-600 text-xs md:text-sm">
         &copy; 2026 Eon Designs by Edwin Gyasi Owusu.
     </footer>
 
     <!-- AI CHAT WIDGET -->
-    <div id="ai-widget" class="fixed bottom-8 right-8 z-50">
-        <button onclick="toggleChat()" id="chat-toggle" class="p-4 bg-black text-white border border-white/20 hover:border-white shadow-2xl transition-all duration-300 hover:scale-105">
-            <i data-lucide="message-square" class="w-6 h-6"></i>
+    <div id="ai-widget" class="fixed bottom-6 right-6 z-50">
+        <button onclick="toggleChat()" id="chat-toggle" class="p-3 md:p-4 bg-black text-white border border-white/20 hover:border-white shadow-2xl transition-all duration-300 hover:scale-105">
+            <i data-lucide="message-square" class="w-5 h-5 md:w-6 md:h-6"></i>
         </button>
-        <div id="chat-window" class="hidden fixed bottom-24 right-4 md:right-8 w-[90vw] md:w-[400px] h-[500px] bg-black border border-white/10 shadow-2xl flex flex-col animate-slide-up">
+        <div id="chat-window" class="hidden fixed bottom-20 right-4 md:bottom-24 md:right-8 w-[90vw] md:w-[400px] h-[400px] md:h-[500px] bg-black border border-white/10 shadow-2xl flex flex-col animate-slide-up rounded-xl md:rounded-none overflow-hidden">
             <div class="bg-dark-900 p-4 border-b border-white/10 flex items-center gap-3">
                 <i data-lucide="sparkles" class="w-4 h-4 text-brand-500"></i>
                 <h3 class="text-white font-medium text-sm">Eon AI</h3>
@@ -568,20 +604,53 @@
         }
         // ----------------------------------------------------------------------
 
-        /* 
-        ▼▼▼ REAL VAULT ITEMS TEMPLATE (Uncomment & fill this when ready) ▼▼▼
-        
-        vaultItems = [
-             { id: 1, category: 'Commercial', title: 'Nike Ad', src: 'assets/vault/v1.jpg', full: 'assets/vault/v1.jpg' },
-             { id: 2, category: 'Food', title: 'Burger King', src: 'assets/vault/v2.jpg', full: 'assets/vault/v2.jpg' },
-             // ... paste 50 items here ...
-        ];
-        */
-
-
         // =================================================================
         // 3. ENGINE LOGIC (DO NOT TOUCH UNLESS EXPERT)
         // =================================================================
+        
+        // --- PARALLAX IMAGES COLLECTION ---
+        const parallaxImages = [];
+        window.enableProjectParallax = (img) => {
+            parallaxImages.push(img);
+        };
+
+        // --- MOBILE BACK BUTTON HANDLER (HISTORY API) ---
+        window.pushModalState = (modalId) => {
+            window.history.pushState({ modal: modalId }, '', `#${modalId}`);
+        }
+
+        window.addEventListener('popstate', (event) => {
+            // Close Mobile Menu
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (!mobileMenu.classList.contains('hidden')) {
+                toggleMobileMenu(true); // pass true to skip pushState
+            }
+
+            // Close Project Modal
+            const projectModal = document.getElementById('project-modal');
+            if (!projectModal.classList.contains('hidden')) {
+                closeProjectModal(true);
+            }
+            
+            // Close Full Vault
+            const vaultOverlay = document.getElementById('full-vault-overlay');
+            if (!vaultOverlay.classList.contains('hidden')) {
+                closeFullVault(true);
+            }
+
+            // Close Blog Modal
+            const blogModal = document.getElementById('blog-modal');
+            if (!blogModal.classList.contains('hidden')) {
+                document.getElementById('blog-modal').classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
+            
+            // Close Lightbox
+            const lightbox = document.getElementById('lightbox');
+            if (!lightbox.classList.contains('hidden')) {
+                closeLightbox(true);
+            }
+        });
 
         // Initialize Icons & Renders
         lucide.createIcons();
@@ -596,22 +665,36 @@
             const heroContent = document.getElementById('hero-content');
             
             if(scrollY < 1000) {
-                heroBg.style.transform = `translateY(${scrollY * 0.3}px)`;
+                // Reduced parallax speed on mobile to prevent jitter
+                const factor = window.innerWidth < 768 ? 0.1 : 0.3;
+                heroBg.style.transform = `translateY(${scrollY * factor}px)`;
                 heroContent.style.transform = `translateY(${scrollY * 0.5}px)`;
                 heroContent.style.opacity = Math.max(0, 1 - scrollY / 700);
             }
+            
+            // Project Parallax
+            parallaxImages.forEach((img, i) => {
+                 // Only animate if element is somewhat visible to save performance
+                 const rect = img.parentElement.getBoundingClientRect();
+                 if(rect.top < window.innerHeight && rect.bottom > 0) {
+                     const speed = 0.05;
+                     const direction = i % 2 === 0 ? 1 : -1;
+                     // Simple transform based on scroll
+                     img.style.transform = `translateY(${(scrollY - img.parentElement.offsetTop) * speed * direction}px)`;
+                 }
+            });
         });
 
         // --- PROJECTS RENDERER ---
         function renderProjects() {
             const container = document.getElementById('projects-container');
             container.innerHTML = projects.map((p, i) => `
-                <div class="flex flex-col md:flex-row gap-16 items-center ${i % 2 !== 0 ? 'md:flex-row-reverse' : ''}">
+                <div class="flex flex-col md:flex-row gap-8 md:gap-16 items-center ${i % 2 !== 0 ? 'md:flex-row-reverse' : ''}">
                     <!-- Image Side -->
                     <div class="w-full md:w-3/5 group cursor-pointer overflow-hidden relative" onclick="openProjectModal(${p.id})">
-                         <div class="w-full h-[400px] md:h-[600px] overflow-hidden relative">
-                            <!-- REMOVED GRAYSCALE -->
-                            <img src="${p.image}" onerror="this.src='${p.fallbackImage}'" class="w-full h-[120%] object-cover transition-transform duration-100 ease-linear" style="transform:translateY(0)" onload="enableProjectParallax(this)" />
+                         <div class="w-full h-[280px] md:h-[600px] overflow-hidden relative">
+                            <!-- REMOVED GRAYSCALE, FIXED HEIGHT FOR MOBILE -->
+                            <img src="${p.image}" onerror="this.src='${p.fallbackImage}'" class="w-full h-full object-cover transition-transform duration-100 ease-linear" style="transform:translateY(0)" onload="enableProjectParallax(this)" />
                             <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
                         </div>
                     </div>
@@ -620,8 +703,8 @@
                         <span class="text-brand-500 tracking-[0.2em] uppercase text-xs font-bold mb-4 block flex items-center gap-2">
                             <span class="w-8 h-[1px] bg-brand-500"></span> ${p.category}
                         </span>
-                        <h3 class="text-4xl md:text-5xl font-display font-medium text-white mb-6 group cursor-pointer hover:text-brand-500 transition-colors" onclick="openProjectModal(${p.id})">${p.title}</h3>
-                        <p class="text-gray-400 mb-8 font-light leading-relaxed text-lg">${p.description}</p>
+                        <h3 class="text-3xl md:text-5xl font-display font-medium text-white mb-4 md:mb-6 group cursor-pointer hover:text-brand-500 transition-colors" onclick="openProjectModal(${p.id})">${p.title}</h3>
+                        <p class="text-gray-400 mb-6 md:mb-8 font-light leading-relaxed text-base md:text-lg line-clamp-3 md:line-clamp-none">${p.description}</p>
                         <button onclick="openProjectModal(${p.id})" class="text-white border-b border-white/30 pb-2 hover:text-brand-500 hover:border-brand-500 uppercase text-xs tracking-widest flex items-center gap-2 group">
                             View Case Study <i data-lucide="arrow-up-right" class="w-4 h-4 group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform"></i>
                         </button>
@@ -634,6 +717,7 @@
         // --- PROJECT MODAL LOGIC ---
         let currentProjId = null;
         window.openProjectModal = (id) => {
+            pushModalState('project-modal');
             currentProjId = id;
             const p = projects.find(x => x.id === id);
             if (!p) return;
@@ -654,30 +738,31 @@
                     <div class="absolute bottom-0 left-0 w-full p-6 md:p-20">
                         <div class="max-w-7xl mx-auto">
                             <span class="text-brand-500 tracking-[0.2em] uppercase text-sm font-medium mb-4 block animate-slide-up">${p.category}</span>
-                            <h1 class="text-4xl md:text-8xl font-display font-medium text-white mb-6 animate-slide-up" style="animation-delay:0.1s">${p.title}</h1>
+                            <h1 class="text-3xl md:text-8xl font-display font-medium text-white mb-2 md:mb-6 animate-slide-up" style="animation-delay:0.1s">${p.title}</h1>
                         </div>
                     </div>
                 </div>
                 <div class="max-w-7xl mx-auto px-6 py-12 md:py-20">
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20 border-b border-white/10 pb-12">
-                         <div><span class="text-gray-500 text-xs uppercase tracking-wider block mb-2">CLIENT</span><span class="text-white font-display text-lg">${p.client}</span></div>
-                         <div><span class="text-gray-500 text-xs uppercase tracking-wider block mb-2">YEAR</span><span class="text-white font-display text-lg">${p.year}</span></div>
-                         <div><span class="text-gray-500 text-xs uppercase tracking-wider block mb-2">ROLE</span><span class="text-white font-display text-lg">${p.role}</span></div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12 md:mb-20 border-b border-white/10 pb-12">
+                         <div><span class="text-gray-500 text-xs uppercase tracking-wider block mb-2">CLIENT</span><span class="text-white font-display text-base md:text-lg">${p.client}</span></div>
+                         <div><span class="text-gray-500 text-xs uppercase tracking-wider block mb-2">YEAR</span><span class="text-white font-display text-base md:text-lg">${p.year}</span></div>
+                         <div><span class="text-gray-500 text-xs uppercase tracking-wider block mb-2">ROLE</span><span class="text-white font-display text-base md:text-lg">${p.role}</span></div>
+                         <div><span class="text-gray-500 text-xs uppercase tracking-wider block mb-2">DELIVERABLES</span><span class="text-white font-display text-base md:text-lg">${p.category}</span></div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-16 mb-24">
-                        <div class="md:col-span-1"><h3 class="text-2xl font-display font-medium text-white">The Challenge</h3></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16 mb-16 md:mb-24">
+                        <div class="md:col-span-1"><h3 class="text-xl md:text-2xl font-display font-medium text-white">The Challenge</h3></div>
                         <div class="md:col-span-2"><p class="text-gray-400 text-base md:text-lg leading-relaxed font-light">${p.challenge}</p></div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-16 mb-24">
-                        <div class="md:col-span-1"><h3 class="text-2xl font-display font-medium text-white">The Solution</h3></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16 mb-16 md:mb-24">
+                        <div class="md:col-span-1"><h3 class="text-xl md:text-2xl font-display font-medium text-white">The Solution</h3></div>
                         <div class="md:col-span-2"><p class="text-gray-400 text-base md:text-lg leading-relaxed font-light">${p.solution}</p></div>
                     </div>
-                    <div class="space-y-12">
+                    <div class="space-y-8 md:space-y-12">
                         ${galleryHtml}
                     </div>
                     <div class="mt-20 pt-10 border-t border-white/10 flex justify-end">
-                        <button onclick="nextProject()" class="text-3xl md:text-6xl font-display italic text-white hover:text-brand-500 flex items-center gap-6 group transition-colors">
-                            Next Project <i data-lucide="arrow-right" class="w-8 h-8 md:w-12 md:h-12 group-hover:translate-x-4 transition-transform"></i>
+                        <button onclick="nextProject()" class="text-2xl md:text-6xl font-display italic text-white hover:text-brand-500 flex items-center gap-6 group transition-colors">
+                            Next Project <i data-lucide="arrow-right" class="w-6 h-6 md:w-12 md:h-12 group-hover:translate-x-4 transition-transform"></i>
                         </button>
                     </div>
                 </div>
@@ -688,50 +773,66 @@
             lucide.createIcons();
         }
         
-        window.closeProjectModal = () => {
+        window.closeProjectModal = (fromBackBtn = false) => {
             document.getElementById('project-modal').classList.add('hidden');
             document.body.style.overflow = 'auto';
+            if(!fromBackBtn) window.history.back(); // Remove state if closed manually
         }
 
         window.nextProject = () => {
             const idx = projects.findIndex(p => p.id === currentProjId);
             const next = projects[(idx + 1) % projects.length];
-            openProjectModal(next.id);
+            // Replace current state so back button goes to home, not previous project
+            window.history.replaceState({ modal: 'project-modal' }, '', `#project-modal`);
+            openProjectModal(next.id); // Re-opens but the state is already there
             document.getElementById('project-modal').scrollTop = 0;
         }
 
         // --- VAULT LOGIC (SORTING & OVERLAY) ---
         function renderVaultPreview() {
-            // UPDATED: Show ONLY 3 items on the homepage
+            // UPDATED: Show ONLY 3 items on the homepage for desktop
             const preview = vaultItems.slice(0, 3);
-            document.getElementById('vault-preview-grid').innerHTML = preview.map(item => `
+            
+            // 1. Desktop Render
+            const desktopHTML = preview.map(item => `
                 <div class="break-inside mb-6 group relative cursor-pointer" onclick="openLightbox('${item.full}', '${item.title}', '${item.category}')">
-                    <!-- REMOVED GRAYSCALE -->
                     <img src="${item.src}" class="w-full h-auto object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-500" />
                     <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
                         <p class="text-white font-display italic">${item.title}</p>
                     </div>
                 </div>
             `).join('');
+            document.getElementById('vault-preview-grid').innerHTML = desktopHTML;
+
+            // 2. Mobile Render (Grid of 4 items for better balance)
+            const mobilePreview = vaultItems.slice(0, 4);
+            const mobileHTML = mobilePreview.map(item => `
+                <div class="group relative cursor-pointer overflow-hidden aspect-square" onclick="openLightbox('${item.full}', '${item.title}', '${item.category}')">
+                    <img src="${item.src}" class="w-full h-full object-cover" />
+                </div>
+            `).join('');
+            document.getElementById('vault-preview-grid-mobile').innerHTML = mobileHTML;
         }
 
         window.openFullVault = () => {
+            pushModalState('full-vault');
             document.getElementById('full-vault-overlay').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
             renderFilters();
             filterVault('All');
         }
 
-        window.closeFullVault = () => {
+        window.closeFullVault = (fromBackBtn = false) => {
             document.getElementById('full-vault-overlay').classList.add('hidden');
             document.body.style.overflow = 'auto';
+            if(!fromBackBtn) window.history.back();
         }
 
         function renderFilters() {
             const cats = ['All', ...new Set(vaultItems.map(i => i.category))];
             const container = document.getElementById('vault-filters');
             container.innerHTML = cats.map(c => `
-                <button onclick="filterVault('${c}')" class="filter-btn px-6 py-2 border border-white/10 text-[10px] uppercase tracking-[0.2em] text-gray-400 hover:border-brand-500 hover:text-white transition-all duration-300 ${c === 'All' ? 'bg-brand-500 text-black border-brand-500' : ''}" data-cat="${c}">
+                <button onclick="filterVault('${c}')" class="filter-btn px-4 py-2 md:px-6 md:py-2 border border-white/10 text-[10px] uppercase tracking-[0.2em] text-gray-400 hover:border-brand-500 hover:text-white transition-all duration-300 ${c === 'All' ? 'bg-brand-500 text-black border-brand-500' : ''}" data-cat="${c}">
                     ${c}
                 </button>
             `).join('');
@@ -763,13 +864,17 @@
         }
 
         window.openLightbox = (src, title, cat) => {
+            pushModalState('lightbox');
             const lb = document.getElementById('lightbox');
             lb.classList.remove('hidden');
             document.getElementById('lightbox-img').src = src;
             document.getElementById('lightbox-title').innerText = title;
             document.getElementById('lightbox-cat').innerText = cat;
         }
-        window.closeLightbox = () => document.getElementById('lightbox').classList.add('hidden');
+        window.closeLightbox = (fromBackBtn = false) => {
+            document.getElementById('lightbox').classList.add('hidden');
+            if(!fromBackBtn) window.history.back();
+        }
 
         // --- BLOG READER LOGIC ---
         function renderBlogGrid() {
@@ -783,14 +888,15 @@
                     <div class="flex items-center gap-4 text-[10px] uppercase tracking-wider text-gray-500 mb-3 font-mono">
                         <span>${post.date}</span>
                     </div>
-                    <h3 class="text-2xl font-display font-medium text-white mb-3 group-hover:text-brand-500 transition-colors">${post.title}</h3>
-                    <p class="text-gray-500 text-sm leading-relaxed font-light">${post.excerpt}</p>
+                    <h3 class="text-xl md:text-2xl font-display font-medium text-white mb-3 group-hover:text-brand-500 transition-colors">${post.title}</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed font-light line-clamp-3">${post.excerpt}</p>
                     <span class="inline-block mt-4 text-xs text-brand-500 border-b border-brand-500 pb-1">Read Article</span>
                 </article>
             `).join('');
         }
 
         window.openBlogModal = (id) => {
+            pushModalState('blog-modal');
             const post = blogPosts.find(p => p.id === id);
             if (!post) return;
             document.getElementById('blog-modal-date').innerText = post.date;
@@ -805,7 +911,22 @@
 
         // --- UTILS ---
         window.scrollToSection = (id) => document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
-        window.toggleMobileMenu = () => document.getElementById('mobile-menu').classList.toggle('hidden');
+        
+        window.toggleMobileMenu = (fromBackBtn = false) => {
+            const menu = document.getElementById('mobile-menu');
+            const isHidden = menu.classList.contains('hidden');
+            
+            if (isHidden) {
+                // Opening
+                if(!fromBackBtn) pushModalState('mobile-menu');
+                menu.classList.remove('hidden');
+            } else {
+                // Closing
+                menu.classList.add('hidden');
+                if(!fromBackBtn) window.history.back();
+            }
+        };
+
         window.handleFormSubmit = (e) => {
             e.preventDefault();
             const btn = document.getElementById('submit-btn');

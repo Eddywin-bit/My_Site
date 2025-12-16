@@ -112,7 +112,7 @@
             <div class="flex items-center gap-3 cursor-pointer group" onclick="scrollToSection('hero')">
                 <div class="relative h-10 w-auto flex items-center justify-center">
                     <!-- LOGO IMAGE: The source is set in the JS Configuration at the bottom -->
-                    <img id="logo-img" src="" alt="Eon" class="h-full w-auto object-contain" onerror="this.style.display='none'; document.getElementById('logo-text').classList.remove('hidden');" />
+                    <img id="logo-img" src="Assets/logo.webp" alt="Eon" class="h-full w-auto object-contain" onerror="this.style.display='none'; document.getElementById('logo-text').classList.remove('hidden');" />
                     <!-- Fallback Text if logo file is missing/broken -->
                     <span id="logo-text" class="hidden text-xl font-display font-bold tracking-wide text-white">EON</span>
                 </div>
@@ -293,7 +293,7 @@
 
     <!-- LIGHTBOX -->
     <div id="lightbox" class="hidden fixed inset-0 z-[90] bg-black flex items-center justify-center p-4 animate-fade-in" onclick="closeLightbox()">
-        <button class="absolute top-4 right-4 md:top-6 md:right-6 text-white hover:text-brand-500 transition-colors p-2" onclick="closeLightbox()">
+        <button class="absolute top-4 right-4 md:top-6 md:right-6 text-white hover:text-brand-500 transition-colors p-2 z-[100] cursor-pointer" onclick="event.stopPropagation(); closeLightbox()">
             <i data-lucide="x" class="w-8 h-8"></i>
         </button>
         <div class="max-w-7xl max-h-[90vh] relative w-full" onclick="event.stopPropagation()">
@@ -306,7 +306,6 @@
             </div>
         </div>
     </div>
-
     <!-- ========================================= -->
     <!-- SECTION: ABOUT                            -->
     <!-- ========================================= -->
@@ -511,7 +510,7 @@
         // LOGO SETTINGS
         // CHANGE THIS to 'logo.png', 'logo.jpg', 'logo.svg', or 'logo.webp'
         // TIP: It must be in the SAME FOLDER as this index.html file.
-        const LOGO_FILENAME = 'logo.webp'; 
+        const LOGO_FILENAME = 'Assets/logo.web'; 
 
         // PROJECTS (CASE STUDIES)
         // You can add as many gallery images as you like.
@@ -638,8 +637,6 @@
         // 3. ENGINE LOGIC (OPTIMIZED FOR SMOOTH SCROLL)
         // =================================================================
         
-        // --- APPLY LOGO ---
-        document.getElementById('logo-img').src = LOGO_FILENAME;
 
         // --- PARALLAX IMAGES COLLECTION ---
         const parallaxImages = [];
@@ -652,27 +649,41 @@
             window.history.pushState({ modal: modalId }, '', `#${modalId}`);
         }
 
+        // --- HISTORY API TRAFFIC CONTROLLER ---
         window.addEventListener('popstate', (event) => {
-            const mobileMenu = document.getElementById('mobile-menu');
-            if (!mobileMenu.classList.contains('hidden')) {
-                toggleMobileMenu(true); 
+            // 1. Is the Lightbox open? Close it and STOP.
+            const lightbox = document.getElementById('lightbox');
+            if (!lightbox.classList.contains('hidden')) {
+                closeLightbox(true); 
+                return; // <--- This prevents it from closing the Vault too!
             }
-            const projectModal = document.getElementById('project-modal');
-            if (!projectModal.classList.contains('hidden')) {
-                closeProjectModal(true);
-            }
-            const vaultOverlay = document.getElementById('full-vault-overlay');
-            if (!vaultOverlay.classList.contains('hidden')) {
-                closeFullVault(true);
-            }
+
+            // 2. Is the Blog Modal open? Close it and STOP.
             const blogModal = document.getElementById('blog-modal');
             if (!blogModal.classList.contains('hidden')) {
                 document.getElementById('blog-modal').classList.add('hidden');
                 document.body.style.overflow = 'auto';
+                return;
             }
-            const lightbox = document.getElementById('lightbox');
-            if (!lightbox.classList.contains('hidden')) {
-                closeLightbox(true);
+
+            // 3. Is the Project Modal open? Close it and STOP.
+            const projectModal = document.getElementById('project-modal');
+            if (!projectModal.classList.contains('hidden')) {
+                closeProjectModal(true);
+                return;
+            }
+
+            // 4. Is the Full Vault Overlay open? Close it and STOP.
+            const vaultOverlay = document.getElementById('full-vault-overlay');
+            if (!vaultOverlay.classList.contains('hidden')) {
+                closeFullVault(true);
+                return;
+            }
+
+            // 5. Is the Mobile Menu open? Close it.
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (!mobileMenu.classList.contains('hidden')) {
+                toggleMobileMenu(true);
             }
         });
 
@@ -855,9 +866,12 @@
         }
 
         window.closeFullVault = (fromBackBtn = false) => {
-            document.getElementById('full-vault-overlay').classList.add('hidden');
-            document.body.style.overflow = 'auto';
-            if(!fromBackBtn) window.history.back();
+            if (!fromBackBtn) {
+                window.history.back();
+            } else {
+                document.getElementById('full-vault-overlay').classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
         }
 
         function renderFilters() {
@@ -902,8 +916,14 @@
             document.getElementById('lightbox-cat').innerText = cat;
         }
         window.closeLightbox = (fromBackBtn = false) => {
-            document.getElementById('lightbox').classList.add('hidden');
-            if(!fromBackBtn) window.history.back();
+            if (!fromBackBtn) {
+                // User clicked "X" button -> Just go back in history.
+                // The 'popstate' listener above will handle the actual hiding.
+                window.history.back();
+            } else {
+                // Called by history (popstate) -> Actually hide the UI.
+                document.getElementById('lightbox').classList.add('hidden');
+            }
         }
 
         // --- BLOG READER LOGIC ---

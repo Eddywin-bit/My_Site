@@ -558,8 +558,8 @@
                 id: 3,
                 title: 'Youth Summit',
                 category: 'Event Branding',
-                image: 'Assets/Church Hand Over_result.webp', 
-                fallbackImage: 'Assets/Virtual-prayer.webp',
+                image: 'Assets/yt-thumb-main.webp', 
+                fallbackImage: 'Assets/yt-thumb-main.webp',
                 client: 'Grace Chapel',
                 year: '2024',
                 role: 'Art Direction',
@@ -732,19 +732,22 @@
             }
         }, { passive: true });
 
-        // --- PROJECTS RENDERER ---
+       // --- PROJECTS RENDERER ---
         function renderProjects() {
             const container = document.getElementById('projects-container');
             container.innerHTML = projects.map((p, i) => `
                 <div class="flex flex-col md:flex-row gap-8 md:gap-16 items-center ${i % 2 !== 0 ? 'md:flex-row-reverse' : ''}">
-                    <!-- Image Side -->
-                    <div class="w-full md:w-3/5 group cursor-pointer overflow-hidden relative" onclick="openProjectModal(${p.id})">
-                         <div class="w-full h-[280px] md:h-[600px] overflow-hidden relative transform-gpu">
-                            <img src="${p.image}" onerror="this.src='${p.fallbackImage}'" class="w-full h-full object-cover transition-transform duration-100 ease-linear will-change-transform" style="transform:translate3d(0,0,0)" onload="enableProjectParallax(this)" />
-                            <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
+                    
+                    <div class="w-full md:w-3/5 group cursor-pointer" onclick="openProjectModal(${p.id})">
+                         
+                         <div class="w-full relative aspect-square md:aspect-[1500/1200] bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden transition-colors hover:border-brand-500/50">
+                            
+                            <img src="${p.image}" onerror="this.src='${p.fallbackImage}'" class="max-w-full max-h-full w-auto h-auto object-contain transition-transform duration-500 ease-out group-hover:scale-105" />
+                            
                         </div>
+
                     </div>
-                    <!-- Text Side -->
+
                     <div class="w-full md:w-2/5">
                         <span class="text-brand-500 tracking-[0.2em] uppercase text-xs font-bold mb-4 block flex items-center gap-2">
                             <span class="w-8 h-[1px] bg-brand-500"></span> ${p.category}

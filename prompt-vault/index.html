@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Prompt Vault</title>
+
+<!-- PWA Meta -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#BF5B3A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Prompt Vault">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="description" content="Your personal AI prompt library — store, search, and copy prompts instantly.">
+
+<style>
+  :root {
+    --parchment:    #F8F3EC;
+    --cream:        #FDF9F3;
+    --linen:        #F0E9DE;
+    --bone:         #E6DDD0;
+    --clay:         #D4C8B8;
+    --terracotta:   #BF5B3A;
+    --terra-soft:   #D4845F;
+    --terra-deep:   #8C3A1F;
+    --ink:          #1E1A16;
+    --ink-75:       #4A423A;
+    --ink-50:       #7A7068;
+    --ink-30:       #A89D94;
+    --ink-15:       #CFC8C0;
+    --warm-white:   #FFFDF9;
+
+    --c-writing:    #BF5B3A;
+    --c-coding:     #4A7A56;
+    --c-design:     #7E5BAE;
+    --c-research:   #2E6E8E;
+    --c-marketing:  #B87A2E;
+    --c-data:       #3A7676;
+    --c-claude:     #D4784A;
+    --c-gemini:     #5A7EB8;
+    --c-other:      #8A7A6A;
+
+    --radius-sm: 4px;
+    --radius:    8px;
+    --radius-lg: 14px;
+    --radius-xl: 20px;
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: Georgia, 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+    background: var(--parchment);
+    color: var(--ink);
+    min-height: 100dvh;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    opacity: 0.028;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+
+  body::after {
+    content: '';
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 3px; z-index: 9999;
+    background: linear-gradient(90deg, var(--terracotta), var(--terra-soft), var(--terracotta));
+  }
+
+  /* ── INSTALL BANNER ── */
+  .install-banner {
+    display: none;
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 700;
+    background: var(--ink);
+    padding: 16px 20px;
+    animation: slideUp 0.5s var(--ease-out);
+    box-shadow: 0 -4px 24px rgba(30,26,22,0.2);
+  }
+  .install-banner.show { display: block; }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+  }
+  .install-inner {
+    max-width: 680px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .install-text {
+    font-family: 'Courier New', monospace;
+    font-size: 12px; color: var(--cream);
+    letter-spacing: 0.3px; line-height: 1.5;
+  }
+  .install-text strong { color: var(--terra-soft); }
+  .install-btns { display: flex; gap: 8px; flex-shrink: 0; }
+  .btn-install {
+    padding: 10px 20px; border: none; border-radius: 100px;
+    font-family: 'Courier New', monospace;
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .btn-install-yes {
+    background: var(--terracotta); color: white;
+    box-shadow: 0 2px 8px rgba(191,91,58,0.3);
+  }
+  .btn-install-yes:hover { background: #C46240; }
+  .btn-install-no {
+    background: transparent; color: var(--ink-30);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .btn-install-no:hover { color: var(--cream); }
+
+  /* ── MASTHEAD ── */
+  .masthead {
+    position: sticky; top: 3px; z-index: 100;
+    background: linear-gradient(to bottom, var(--cream) 0%, var(--cream) 88%, rgba(253,249,243,0) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    padding: 0 20px;
+  }
+  .masthead::after {
+    content: '';
+    position: absolute; bottom: 0; left: 24px; right: 24px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, var(--clay) 30%, var(--clay) 70%, transparent 100%);
+  }
+
+  .masthead-inner { max-width: 680px; margin: 0 auto; }
+
+  .brand {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 0 14px;
+  }
+  .brand-left { display: flex; flex-direction: column; }
+  .brand-name {
+    font-size: 28px; font-weight: 700; letter-spacing: -0.8px;
+    color: var(--ink); line-height: 1;
+  }
+  .brand-sub {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 8.5px; text-transform: uppercase;
+    letter-spacing: 3.5px; color: var(--ink-30);
+    margin-top: 5px;
+  }
+
+  .btn-new {
+    display: flex; align-items: center; gap: 7px;
+    padding: 11px 20px;
+    background: var(--terracotta);
+    color: var(--warm-white);
+    border: none; border-radius: 100px;
+    font-family: 'Courier New', monospace;
+    font-size: 10.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.8px;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(191,91,58,0.25), 0 0 0 1px rgba(191,91,58,0.1) inset;
+    transition: all 0.3s var(--ease-out);
+  }
+  .btn-new:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(191,91,58,0.3), 0 0 0 1px rgba(191,91,58,0.1) inset;
+    background: #C46240;
+  }
+  .btn-new:active { transform: translateY(0) scale(0.97); }
+  .btn-new svg { width: 13px; height: 13px; stroke-width: 3; }
+
+  /* ── SEARCH ── */
+  .search-area { padding-bottom: 10px; }
+  .search-box { position: relative; }
+  .search-box .s-icon {
+    position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+    width: 14px; height: 14px; color: var(--ink-30);
+    transition: color 0.2s;
+  }
+  .search-input {
+    width: 100%; padding: 13px 16px 13px 42px;
+    border: 1.5px solid var(--bone); border-radius: 100px;
+    background: var(--warm-white);
+    font-family: Georgia, serif; font-size: 14px;
+    color: var(--ink); outline: none;
+    transition: all 0.3s var(--ease-out);
+    box-shadow: 0 1px 4px rgba(30,26,22,0.03);
+  }
+  .search-input::placeholder { color: var(--clay); font-style: italic; }
+  .search-input:focus {
+    border-color: var(--terra-soft);
+    box-shadow: 0 0 0 4px rgba(191,91,58,0.06), 0 2px 8px rgba(30,26,22,0.04);
+  }
+  .search-box:focus-within .s-icon { color: var(--terracotta); }
+
+  /* ── CATEGORY PILLS ── */
+  .pills-row {
+    display: flex; gap: 6px;
+    overflow-x: auto; padding: 2px 0 14px;
+    -ms-overflow-style: none; scrollbar-width: none;
+  }
+  .pills-row::-webkit-scrollbar { display: none; }
+  .pill {
+    flex-shrink: 0; padding: 7px 16px;
+    border-radius: 100px;
+    border: 1.5px solid var(--bone);
+    background: transparent;
+    color: var(--ink-50);
+    font-family: 'Courier New', monospace;
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.2px;
+    cursor: pointer; white-space: nowrap;
+    transition: all 0.25s var(--ease-out);
+  }
+  .pill:hover { border-color: var(--ink-30); color: var(--ink-75); background: var(--linen); }
+  .pill.active {
+    background: var(--ink); color: var(--cream);
+    border-color: var(--ink);
+    box-shadow: 0 2px 8px rgba(30,26,22,0.12);
+  }
+
+  /* ── MAIN ── */
+  .main {
+    position: relative; z-index: 1;
+    max-width: 680px; margin: 0 auto;
+    padding: 0 20px;
+  }
+  .results-bar {
+    display: flex; align-items: center; gap: 16px;
+    padding: 16px 0 12px;
+  }
+  .results-count {
+    font-family: 'Courier New', monospace;
+    font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 2.5px;
+    color: var(--ink-30); white-space: nowrap;
+  }
+  .results-line { flex: 1; height: 1px; background: var(--bone); }
+
+  /* ── CARDS ── */
+  .cards-list {
+    display: flex; flex-direction: column; gap: 14px;
+    padding-bottom: 120px;
+  }
+  .card {
+    position: relative;
+    background: var(--warm-white);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--bone);
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(30,26,22,0.04), 0 4px 16px rgba(30,26,22,0.03);
+    transition: all 0.35s var(--ease-out);
+    animation: cardReveal 0.55s var(--ease-out) both;
+  }
+  .card:hover {
+    box-shadow: 0 2px 6px rgba(30,26,22,0.06), 0 12px 32px rgba(30,26,22,0.06);
+    transform: translateY(-2px);
+  }
+  @keyframes cardReveal {
+    from { opacity: 0; transform: translateY(16px) scale(0.99); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .card-accent {
+    position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+  }
+  .card-content { padding: 20px 18px 18px 24px; }
+  .card-header {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 8px;
+  }
+  .card-title {
+    font-size: 17px; font-weight: 700; line-height: 1.35;
+    color: var(--ink); flex: 1; letter-spacing: -0.2px;
+  }
+  .card-dots {
+    width: 32px; height: 32px; flex-shrink: 0;
+    border: none; background: transparent;
+    border-radius: var(--radius); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink-15); transition: all 0.2s;
+  }
+  .card-dots:hover { background: var(--linen); color: var(--ink-50); }
+  .card-dots svg { width: 16px; height: 16px; }
+  .card-desc {
+    font-size: 14px; color: var(--ink-50);
+    line-height: 1.6; margin-top: 6px; font-style: italic;
+  }
+  .card-badges {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 14px; flex-wrap: wrap;
+  }
+  .badge-cat {
+    font-family: 'Courier New', monospace;
+    font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.2px;
+    padding: 4px 12px; border-radius: 100px; color: white;
+  }
+  .badge-copies {
+    display: flex; align-items: center; gap: 5px;
+    font-family: 'Courier New', monospace;
+    font-size: 10px; color: var(--ink-30); letter-spacing: 0.3px;
+  }
+  .badge-copies svg { width: 12px; height: 12px; opacity: 0.4; }
+  .card-tags {
+    display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px;
+  }
+  .tag {
+    font-family: 'Courier New', monospace;
+    font-size: 10px; color: var(--ink-30);
+    background: var(--linen); padding: 3px 10px;
+    border-radius: 100px; letter-spacing: 0.3px;
+    border: 1px solid rgba(0,0,0,0.03);
+  }
+  .card-toggle {
+    display: inline-flex; align-items: center; gap: 5px;
+    margin-top: 14px; padding: 6px 14px 6px 0;
+    border: none; background: transparent; cursor: pointer;
+    font-family: 'Courier New', monospace;
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.8px;
+    color: var(--terracotta); transition: color 0.2s;
+  }
+  .card-toggle:hover { color: var(--terra-deep); }
+  .card-toggle svg {
+    width: 12px; height: 12px;
+    transition: transform 0.35s var(--ease-out);
+  }
+  .card-toggle.open svg { transform: rotate(180deg); }
+  .card-preview {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.45s var(--ease-out);
+  }
+  .card-preview.open { max-height: 900px; }
+  .card-preview-inner {
+    margin: 0 18px 18px 24px;
+    padding: 18px;
+    background: var(--parchment);
+    border: 1px dashed var(--clay);
+    border-radius: var(--radius);
+    position: relative;
+  }
+  .card-preview-inner::before {
+    content: 'PROMPT TEXT';
+    position: absolute; top: -8px; left: 14px;
+    background: var(--parchment); padding: 0 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 8px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 2.5px;
+    color: var(--ink-30);
+  }
+  .prompt-text {
+    font-family: 'Courier New', monospace;
+    font-size: 12.5px; line-height: 1.75;
+    color: var(--ink-75); white-space: pre-wrap; word-break: break-word;
+  }
+  .btn-copy-inline {
+    margin-top: 14px; padding: 10px 22px;
+    background: var(--terracotta); color: var(--warm-white);
+    border: none; border-radius: 100px;
+    font-family: 'Courier New', monospace;
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.8px;
+    cursor: pointer;
+    transition: all 0.25s var(--ease-out);
+    box-shadow: 0 2px 10px rgba(191,91,58,0.2);
+  }
+  .btn-copy-inline:hover {
+    background: var(--terra-deep);
+    box-shadow: 0 4px 18px rgba(191,91,58,0.3);
+    transform: translateY(-1px);
+  }
+  .btn-copy-inline:active { transform: scale(0.97); }
+
+  /* ── DROPDOWN ── */
+  .dropdown {
+    position: absolute; top: 50px; right: 16px; z-index: 60;
+    background: var(--warm-white); border: 1px solid var(--bone);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 12px 40px rgba(30,26,22,0.12), 0 2px 6px rgba(30,26,22,0.06);
+    min-width: 170px; overflow: hidden;
+    display: none; transform-origin: top right;
+  }
+  .dropdown.open { display: block; animation: dropIn 0.22s var(--ease-out); }
+  @keyframes dropIn {
+    from { opacity: 0; transform: scale(0.92) translateY(-6px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .dropdown button {
+    width: 100%; padding: 12px 20px;
+    border: none; background: transparent;
+    text-align: left; cursor: pointer;
+    font-family: 'Courier New', monospace;
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px;
+    color: var(--ink-75);
+    display: flex; align-items: center; gap: 10px;
+    transition: all 0.15s;
+  }
+  .dropdown button:hover { background: var(--linen); color: var(--ink); }
+  .dropdown button svg { width: 14px; height: 14px; opacity: 0.45; }
+  .dropdown .sep { height: 1px; background: var(--bone); margin: 0 12px; }
+  .dropdown button.danger { color: #B54538; }
+  .dropdown button.danger:hover { background: #FEF0EE; }
+
+  /* ── EMPTY ── */
+  .empty { text-align: center; padding: 80px 24px; }
+  .empty-glyph {
+    width: 72px; height: 72px; margin: 0 auto 24px;
+    background: var(--linen); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; border: 2px dashed var(--clay);
+  }
+  .empty h3 { font-size: 18px; color: var(--ink-50); margin-bottom: 8px; }
+  .empty p { font-size: 14px; color: var(--ink-30); font-style: italic; line-height: 1.6; }
+
+  /* ── OVERLAY & SHEET ── */
+  .overlay {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(30,26,22,0.3);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.35s var(--ease-out);
+  }
+  .overlay.open { opacity: 1; pointer-events: auto; }
+  .sheet {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 300;
+    background: var(--cream);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    max-height: 92dvh; overflow-y: auto;
+    transform: translateY(100%);
+    transition: transform 0.45s var(--ease-out);
+    box-shadow: 0 -12px 48px rgba(30,26,22,0.1);
+  }
+  .sheet.open { transform: translateY(0); }
+  .sheet-grip {
+    display: flex; justify-content: center; padding: 12px 0 4px;
+  }
+  .sheet-grip span {
+    width: 40px; height: 4px; border-radius: 2px; background: var(--clay);
+  }
+  .sheet-top {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 6px 24px 0;
+  }
+  .sheet-heading { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+  .sheet-x {
+    width: 36px; height: 36px; border: none;
+    background: var(--linen); color: var(--ink-50);
+    border-radius: 50%; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; transition: all 0.2s;
+  }
+  .sheet-x:hover { background: var(--bone); color: var(--ink); }
+  .sheet-form { padding: 20px 24px 44px; }
+  .field { margin-bottom: 20px; }
+  .field-label {
+    display: block;
+    font-family: 'Courier New', monospace;
+    font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 2.5px;
+    color: var(--ink-30); margin-bottom: 8px;
+  }
+  .field-input, .field-select, .field-textarea {
+    width: 100%; padding: 13px 16px;
+    border: 1.5px solid var(--bone); border-radius: var(--radius);
+    background: var(--warm-white);
+    font-family: Georgia, serif; font-size: 15px;
+    color: var(--ink); outline: none;
+    transition: all 0.25s var(--ease-out);
+  }
+  .field-input:focus, .field-select:focus, .field-textarea:focus {
+    border-color: var(--terra-soft);
+    box-shadow: 0 0 0 4px rgba(191,91,58,0.06);
+  }
+  .field-input::placeholder, .field-textarea::placeholder { color: var(--clay); font-style: italic; }
+  .field-textarea {
+    font-family: 'Courier New', monospace; font-size: 13px;
+    line-height: 1.7; resize: vertical; min-height: 140px;
+  }
+  .field-select {
+    -webkit-appearance: none; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23A89D94' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 14px center;
+    padding-right: 40px; cursor: pointer;
+  }
+  .field-hint {
+    display: block; margin-top: 6px;
+    font-family: 'Courier New', monospace;
+    font-size: 9px; color: var(--clay); letter-spacing: 0.5px;
+  }
+  .btn-submit {
+    width: 100%; padding: 16px;
+    background: var(--terracotta); color: var(--warm-white);
+    border: none; border-radius: 100px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 2.5px;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(191,91,58,0.25);
+    transition: all 0.3s var(--ease-out);
+  }
+  .btn-submit:hover {
+    background: var(--terra-deep);
+    box-shadow: 0 8px 28px rgba(191,91,58,0.35);
+    transform: translateY(-1px);
+  }
+  .btn-submit:active { transform: scale(0.98); }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 32px; left: 50%;
+    transform: translateX(-50%) translateY(70px) scale(0.95);
+    background: var(--ink); color: var(--cream);
+    padding: 14px 30px; border-radius: 100px;
+    font-family: 'Courier New', monospace;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.8px; z-index: 600;
+    opacity: 0; pointer-events: none;
+    box-shadow: 0 8px 30px rgba(30,26,22,0.2);
+    transition: all 0.45s var(--ease-spring);
+    white-space: nowrap;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+
+  /* ── CONFIRM DIALOG ── */
+  .dialog-bg {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(30,26,22,0.4);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.25s var(--ease-out);
+  }
+  .dialog-bg.open { opacity: 1; pointer-events: auto; }
+  .dialog {
+    background: var(--cream); border-radius: var(--radius-lg);
+    padding: 30px; max-width: 360px; width: 88%;
+    box-shadow: 0 20px 60px rgba(30,26,22,0.2);
+    transform: scale(0.92);
+    transition: transform 0.35s var(--ease-spring);
+  }
+  .dialog-bg.open .dialog { transform: scale(1); }
+  .dialog h3 { font-size: 18px; margin-bottom: 8px; }
+  .dialog p { font-size: 14px; color: var(--ink-50); line-height: 1.6; margin-bottom: 24px; font-style: italic; }
+  .dialog-btns { display: flex; gap: 10px; justify-content: flex-end; }
+  .dialog-btns button {
+    padding: 10px 24px; border-radius: 100px; border: none;
+    font-family: 'Courier New', monospace;
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.2px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .btn-d-cancel { background: var(--linen); color: var(--ink-50); }
+  .btn-d-cancel:hover { background: var(--bone); }
+  .btn-d-delete { background: #B54538; color: white; box-shadow: 0 2px 10px rgba(181,69,56,0.2); }
+  .btn-d-delete:hover { background: #943830; }
+
+  /* ── RESPONSIVE ── */
+  @media (min-width: 640px) {
+    .masthead { padding: 0 32px; }
+    .main { padding: 0 32px; }
+    .sheet {
+      left: 50%; right: auto; width: 520px;
+      transform: translate(-50%, 100%);
+      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    }
+    .sheet.open { transform: translate(-50%, 0); }
+  }
+  @media (min-width: 1024px) {
+    .cards-list { gap: 16px; }
+    .card-content { padding: 22px 20px 20px 28px; }
+  }
+
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--clay); border-radius: 3px; }
+  :focus-visible { outline: 2px solid var(--terracotta); outline-offset: 2px; }
+  ::selection { background: rgba(191,91,58,0.15); color: var(--ink); }
+</style>
+</head>
+<body>
+
+<!-- INSTALL BANNER -->
+<div class="install-banner" id="installBanner">
+  <div class="install-inner">
+    <div class="install-text"><strong>Prompt Vault</strong> can be installed as an app for instant offline access.</div>
+    <div class="install-btns">
+      <button class="btn-install btn-install-no" onclick="dismissInstall()">Later</button>
+      <button class="btn-install btn-install-yes" onclick="installApp()">Install</button>
+    </div>
+  </div>
+</div>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="brand">
+      <div class="brand-left">
+        <div class="brand-name">Prompt Vault</div>
+        <div class="brand-sub">Personal Prompt Library</div>
+      </div>
+      <button class="btn-new" onclick="openSheet()" aria-label="New prompt">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        New
+      </button>
+    </div>
+    <div class="search-area">
+      <div class="search-box">
+        <input class="search-input" type="text" placeholder="Search prompts, tags, categories…" id="searchInput" oninput="render()">
+        <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </div>
+    </div>
+    <div class="pills-row" id="pillsRow"></div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="results-bar">
+    <span class="results-count" id="resultsCount"></span>
+    <div class="results-line"></div>
+  </div>
+  <div class="cards-list" id="cardsList"></div>
+</main>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay" onclick="closeSheet()"></div>
+
+<!-- BOTTOM SHEET -->
+<div class="sheet" id="sheet">
+  <div class="sheet-grip"><span></span></div>
+  <div class="sheet-top">
+    <div class="sheet-heading" id="sheetHeading">New Prompt</div>
+    <button class="sheet-x" onclick="closeSheet()" aria-label="Close">&times;</button>
+  </div>
+  <div class="sheet-form">
+    <div class="field">
+      <label class="field-label">Title</label>
+      <input class="field-input" type="text" id="fTitle" placeholder="e.g. Blog Post Outline Generator">
+    </div>
+    <div class="field">
+      <label class="field-label">Category</label>
+      <select class="field-select" id="fCategory"></select>
+    </div>
+    <div class="field">
+      <label class="field-label">Description</label>
+      <input class="field-input" type="text" id="fDesc" placeholder="What does this prompt do?">
+    </div>
+    <div class="field">
+      <label class="field-label">Prompt Text</label>
+      <textarea class="field-textarea" id="fPrompt" placeholder="Paste your full prompt here…"></textarea>
+    </div>
+    <div class="field">
+      <label class="field-label">Tags</label>
+      <input class="field-input" type="text" id="fTags" placeholder="e.g. blog, seo, writing">
+      <span class="field-hint">Separate tags with commas</span>
+    </div>
+    <button class="btn-submit" onclick="savePrompt()">Save Prompt</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- CONFIRM DIALOG -->
+<div class="dialog-bg" id="dialogBg">
+  <div class="dialog">
+    <h3>Delete this prompt?</h3>
+    <p>This action cannot be undone. The prompt will be permanently removed from your vault.</p>
+    <div class="dialog-btns">
+      <button class="btn-d-cancel" onclick="closeDialog()">Cancel</button>
+      <button class="btn-d-delete" id="btnConfirmDel">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════ APP LOGIC ═══════
+const CATS=['All','Writing','Coding','Design','Research','Marketing','Data','Claude','Gemini','Other'];
+const CCLR={Writing:'#BF5B3A',Coding:'#4A7A56',Design:'#7E5BAE',Research:'#2E6E8E',Marketing:'#B87A2E',Data:'#3A7676',Claude:'#D4784A',Gemini:'#5A7EB8',Other:'#8A7A6A'};
+
+const SAMPLES=[
+  {id:1,title:'Blog Post Outline Generator',category:'Writing',
+    description:'Creates a structured outline for any blog topic with SEO hooks and calls to action',
+    prompt:'You are a content strategist. Create a detailed blog post outline for the topic: [TOPIC].\n\nInclude:\n1. A compelling headline with a power word\n2. Meta description (under 155 characters)\n3. Introduction hook\n4. 5-7 H2 subheadings with 2-3 bullet points each\n5. Key takeaways section\n6. Call to action\n\nOptimize for the keyword: [KEYWORD]. Tone: [professional / casual / technical].',
+    tags:['blog','seo','outline','content'],copies:3},
+  {id:2,title:'Python Code Reviewer',category:'Coding',
+    description:'Performs a thorough code review checking for bugs, style issues, performance, and security',
+    prompt:'Review the following Python code. For each issue found, provide:\n\n- Line number or section\n- Issue type: [Bug | Style | Performance | Security]\n- Severity: [Low | Medium | High]\n- Explanation of the problem\n- Suggested fix with corrected code\n\nAlso note what the code does well. Be concise but thorough.\n\n```python\n[PASTE CODE HERE]\n```',
+    tags:['python','review','debugging'],copies:7}
+];
+
+let prompts=[],activeCat='All',editId=null,menuOpen=null,delTarget=null,uidCounter=100;
+
+function load(){
+  const s=localStorage.getItem('pv2_data');
+  if(s){prompts=JSON.parse(s)}else{prompts=SAMPLES.map(p=>({...p}));persist()}
+}
+function persist(){localStorage.setItem('pv2_data',JSON.stringify(prompts))}
+
+function renderPills(){
+  document.getElementById('pillsRow').innerHTML=CATS.map(c=>
+    `<button class="pill${c===activeCat?' active':''}" onclick="pickCat('${c}')">${c}</button>`
+  ).join('');
+}
+function pickCat(c){activeCat=c;renderPills();render()}
+
+function render(){
+  const q=document.getElementById('searchInput').value.toLowerCase().trim();
+  let list=prompts.slice();
+  if(activeCat!=='All')list=list.filter(p=>p.category===activeCat);
+  if(q)list=list.filter(p=>
+    p.title.toLowerCase().includes(q)||
+    p.description.toLowerCase().includes(q)||
+    p.prompt.toLowerCase().includes(q)||
+    p.tags.some(t=>t.toLowerCase().includes(q))
+  );
+  list.sort((a,b)=>b.id-a.id);
+
+  document.getElementById('resultsCount').textContent=
+    list.length+' prompt'+(list.length!==1?'s':'');
+
+  const el=document.getElementById('cardsList');
+  if(!list.length){
+    el.innerHTML=`<div class="empty">
+      <div class="empty-glyph">\u2727</div>
+      <h3>No prompts found</h3>
+      <p>Tap <strong>+ New</strong> to add your first prompt.</p>
+    </div>`;
+    return;
+  }
+
+  el.innerHTML=list.map((p,i)=>{
+    const clr=CCLR[p.category]||CCLR.Other;
+    const tags=p.tags.map(t=>`<span class="tag">#${t}</span>`).join('');
+    return `
+    <div class="card" style="animation-delay:${i*0.06}s">
+      <div class="card-accent" style="background:${clr}"></div>
+      <div class="card-content">
+        <div class="card-header">
+          <div class="card-title">${esc(p.title)}</div>
+          <button class="card-dots" onclick="toggleMenu(event,${p.id})" aria-label="Options">
+            <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg>
+          </button>
+        </div>
+        <div class="card-desc">${esc(p.description)}</div>
+        <div class="card-badges">
+          <span class="badge-cat" style="background:${clr}">${p.category}</span>
+          <span class="badge-copies">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            ${p.copies||0} ${(p.copies||0)===1?'copy':'copies'}
+          </span>
+        </div>
+        ${tags?`<div class="card-tags">${tags}</div>`:''}
+        <button class="card-toggle" id="tgl-${p.id}" onclick="toggleExpand(${p.id})">
+          <span>View prompt</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+      </div>
+      <div class="card-preview" id="prv-${p.id}">
+        <div class="card-preview-inner">
+          <div class="prompt-text">${esc(p.prompt)}</div>
+          <button class="btn-copy-inline" onclick="copyPrompt(${p.id})">Copy to Clipboard</button>
+        </div>
+      </div>
+      <div class="dropdown" id="dd-${p.id}">
+        <button onclick="copyPrompt(${p.id})">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          Copy
+        </button>
+        <div class="sep"></div>
+        <button onclick="editPrompt(${p.id})">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Edit
+        </button>
+        <div class="sep"></div>
+        <button class="danger" onclick="askDelete(${p.id})">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+          Delete
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+
+function toggleExpand(id){
+  const p=document.getElementById('prv-'+id);
+  const b=document.getElementById('tgl-'+id);
+  const isOpen=p.classList.toggle('open');
+  b.classList.toggle('open',isOpen);
+  b.querySelector('span').textContent=isOpen?'Hide prompt':'View prompt';
+}
+
+function toggleMenu(e,id){
+  e.stopPropagation();
+  if(menuOpen===id){closeMenus();return}
+  closeMenus();
+  const d=document.getElementById('dd-'+id);
+  if(d){d.classList.add('open');menuOpen=id}
+}
+function closeMenus(){
+  if(menuOpen!==null){
+    const d=document.getElementById('dd-'+menuOpen);
+    if(d)d.classList.remove('open');
+    menuOpen=null;
+  }
+}
+document.addEventListener('click',closeMenus);
+
+function copyPrompt(id){
+  closeMenus();
+  const p=prompts.find(x=>x.id===id);
+  if(!p)return;
+  navigator.clipboard.writeText(p.prompt).then(()=>{
+    p.copies=(p.copies||0)+1;
+    persist();render();
+    toast('Copied to clipboard');
+  }).catch(()=>toast('Failed to copy'));
+}
+
+function openSheet(id){
+  editId=id||null;
+  document.getElementById('sheetHeading').textContent=id?'Edit Prompt':'New Prompt';
+  if(id){
+    const p=prompts.find(x=>x.id===id);
+    document.getElementById('fTitle').value=p.title;
+    document.getElementById('fCategory').value=p.category;
+    document.getElementById('fDesc').value=p.description;
+    document.getElementById('fPrompt').value=p.prompt;
+    document.getElementById('fTags').value=p.tags.join(', ');
+  } else {
+    ['fTitle','fDesc','fPrompt','fTags'].forEach(k=>document.getElementById(k).value='');
+    document.getElementById('fCategory').value='Writing';
+  }
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('sheet').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeSheet(){
+  document.getElementById('overlay').classList.remove('open');
+  document.getElementById('sheet').classList.remove('open');
+  document.body.style.overflow='';
+  editId=null;
+}
+function savePrompt(){
+  const title=document.getElementById('fTitle').value.trim();
+  const category=document.getElementById('fCategory').value;
+  const desc=document.getElementById('fDesc').value.trim();
+  const prompt=document.getElementById('fPrompt').value.trim();
+  const tags=document.getElementById('fTags').value.split(',').map(t=>t.trim().toLowerCase()).filter(Boolean);
+  if(!title||!prompt){toast('Title and prompt text are required');return}
+  if(editId){
+    const p=prompts.find(x=>x.id===editId);
+    Object.assign(p,{title,category,description:desc,prompt,tags});
+    toast('Prompt updated');
+  } else {
+    prompts.push({id:Date.now()+(uidCounter++),title,category,description:desc,prompt,tags,copies:0});
+    toast('Prompt saved to vault');
+  }
+  persist();closeSheet();render();
+}
+
+function editPrompt(id){closeMenus();openSheet(id)}
+
+function askDelete(id){closeMenus();delTarget=id;document.getElementById('dialogBg').classList.add('open')}
+function closeDialog(){document.getElementById('dialogBg').classList.remove('open');delTarget=null}
+document.getElementById('btnConfirmDel').addEventListener('click',()=>{
+  if(delTarget!==null){
+    prompts=prompts.filter(p=>p.id!==delTarget);
+    persist();render();closeDialog();
+    toast('Prompt deleted');
+  }
+});
+
+let tt;
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.classList.add('show');
+  clearTimeout(tt);
+  tt=setTimeout(()=>el.classList.remove('show'),2500);
+}
+
+// ═══════ PWA INSTALL LOGIC ═══════
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBanner').classList.add('show');
+});
+
+function installApp() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(result => {
+    if (result.outcome === 'accepted') {
+      toast('App installed successfully!');
+    }
+    deferredPrompt = null;
+    document.getElementById('installBanner').classList.remove('show');
+  });
+}
+
+function dismissInstall() {
+  document.getElementById('installBanner').classList.remove('show');
+}
+
+window.addEventListener('appinstalled', () => {
+  document.getElementById('installBanner').classList.remove('show');
+  deferredPrompt = null;
+});
+
+// ═══════ SERVICE WORKER REGISTRATION ═══════
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('SW registered:', reg.scope))
+      .catch(err => console.log('SW registration failed:', err));
+  });
+}
+
+// ═══════ INIT ═══════
+(function init(){
+  const sel=document.getElementById('fCategory');
+  sel.innerHTML=CATS.filter(c=>c!=='All').map(c=>`<option value="${c}">${c}</option>`).join('');
+  load();renderPills();render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Ledger · CEO Gyasi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background: linear-gradient(180deg, #f5f1e8 0%, #f0ebde 100%);
+    font-family: 'Inter Tight', system-ui, sans-serif;
+    color: #1a1612;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(168,132,44,0.2); border-radius: 3px; }
+
+  .grain {
+    position: fixed; inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(80,60,20,0.04) 1px, transparent 0);
+    background-size: 32px 32px;
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ======= GATE ======= */
+  .gate {
+    position: fixed; inset: 0; z-index: 50;
+    background: linear-gradient(180deg, #f5f1e8 0%, #ebe4d3 100%);
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .gate.hidden { display: none; }
+  .gate-card {
+    background: linear-gradient(180deg, #fefcf7 0%, #f8f3e8 100%);
+    border-radius: 16px;
+    padding: 44px 36px;
+    max-width: 420px; width: 100%;
+    box-shadow:
+      0 0.5px 1px rgba(80, 60, 20, 0.04),
+      0 4px 8px rgba(80, 60, 20, 0.06),
+      0 16px 32px rgba(80, 60, 20, 0.08),
+      0 40px 80px rgba(80, 60, 20, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 1);
+    border: 1px solid rgba(168, 132, 44, 0.12);
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .gate-card::before {
+    content: ""; position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, #a8842c, #c19a3e, #a8842c);
+  }
+  .gate-icon {
+    font-size: 28px; color: #a8842c;
+    margin-bottom: 16px; line-height: 1;
+  }
+  .gate-eyebrow {
+    font-size: 9px; letter-spacing: 4px; color: #a8842c;
+    text-transform: uppercase; font-weight: 500;
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 8px;
+  }
+  .gate-title {
+    font-family: 'Fraunces', serif; font-size: 30px; font-weight: 600;
+    font-variation-settings: 'opsz' 144;
+    color: #1a1612; letter-spacing: -1px; line-height: 1.1;
+    margin-bottom: 6px;
+  }
+  .gate-title em { font-style: italic; color: #a8842c; }
+  .gate-sub {
+    font-size: 13px; color: #6b6558;
+    font-style: italic; font-family: 'Fraunces', serif;
+    margin-bottom: 28px;
+  }
+  .gate-input-wrap {
+    background: linear-gradient(180deg, #ede7d6 0%, #f0eadb 100%);
+    border-radius: 10px; padding: 3px;
+    box-shadow:
+      inset 0 1px 2px rgba(80,60,20,0.08),
+      inset 0 2px 4px rgba(80,60,20,0.04);
+    margin-bottom: 14px;
+  }
+  .gate-input {
+    width: 100%; background: #fefcf7;
+    border: none; outline: none;
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 14px; color: #1a1612;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 1px; text-align: center;
+    box-shadow: inset 0 1px 2px rgba(80,60,20,0.04);
+  }
+  .gate-btn {
+    width: 100%;
+    background: linear-gradient(180deg, #c19a3e 0%, #a8842c 100%);
+    color: #fefcf7; border: none; border-radius: 8px;
+    padding: 14px; font-size: 11px; letter-spacing: 3px;
+    text-transform: uppercase; font-family: 'JetBrains Mono', monospace;
+    font-weight: 500; cursor: pointer;
+    box-shadow:
+      0 1px 1px rgba(80,60,20,0.15),
+      0 4px 8px rgba(168,132,44,0.25),
+      inset 0 1px 0 rgba(255,255,255,0.4),
+      inset 0 -1px 0 rgba(80,60,20,0.15);
+    transition: transform 0.1s;
+  }
+  .gate-btn:hover { transform: translateY(-1px); }
+  .gate-btn:active { transform: translateY(1px); }
+  .gate-btn:disabled { opacity: 0.6; cursor: wait; }
+  .gate-error {
+    margin-top: 14px; font-size: 12px;
+    color: #8b3a3a; font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.5px;
+  }
+  .gate-hint {
+    margin-top: 24px; padding-top: 20px;
+    border-top: 1px dashed rgba(168, 132, 44, 0.2);
+    font-size: 10px; color: #8b8478;
+    font-family: 'Fraunces', serif; font-style: italic;
+    line-height: 1.5;
+  }
+
+  /* ======= MAIN ======= */
+  .container { position: relative; z-index: 1; max-width: 1280px; margin: 0 auto; padding: 32px; }
+
+  .header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 32px; padding-bottom: 24px;
+    border-bottom: 1px solid rgba(168, 132, 44, 0.15);
+    flex-wrap: wrap; gap: 20px;
+  }
+  .eyebrow {
+    font-size: 10px; letter-spacing: 5px; color: #a8842c;
+    text-transform: uppercase; margin-bottom: 8px; font-weight: 500;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .title {
+    font-family: 'Fraunces', serif; font-size: 44px; font-weight: 600;
+    font-variation-settings: 'opsz' 144;
+    color: #1a1612; letter-spacing: -1.5px; line-height: 1;
+  }
+  .title em { font-style: italic; color: #a8842c; }
+  .tagline {
+    font-size: 12px; color: #6b6558; margin-top: 8px;
+    font-style: italic; font-family: 'Fraunces', serif;
+  }
+
+  .header-right { display: flex; gap: 12px; align-items: center; }
+  .stats { display: flex; gap: 12px; }
+  .stat-card {
+    background: linear-gradient(180deg, #fefcf7 0%, #f8f3e8 100%);
+    border-radius: 10px; padding: 14px 22px;
+    box-shadow:
+      0 0.5px 1px rgba(80, 60, 20, 0.04),
+      0 2px 4px rgba(80, 60, 20, 0.04),
+      0 8px 16px rgba(80, 60, 20, 0.04),
+      0 24px 48px rgba(80, 60, 20, 0.03),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(168, 132, 44, 0.1);
+    text-align: center; min-width: 90px;
+  }
+  .stat-label {
+    font-size: 9px; letter-spacing: 2.5px; color: #8b8478;
+    text-transform: uppercase; font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 4px;
+  }
+  .stat-value {
+    font-family: 'Fraunces', serif; font-size: 32px; font-weight: 600;
+    font-variation-settings: 'opsz' 144; line-height: 1;
+  }
+  .stat-active { color: #a8842c; }
+  .stat-done { color: #3d6b3d; }
+
+  .lock-btn {
+    background: linear-gradient(180deg, #fefcf7 0%, #f5f0e2 100%);
+    border: 1px solid rgba(168, 132, 44, 0.15);
+    border-radius: 10px;
+    width: 44px; height: 44px;
+    cursor: pointer; font-size: 16px;
+    color: #6b6558;
+    box-shadow:
+      0 1px 1px rgba(80,60,20,0.06),
+      0 2px 4px rgba(80,60,20,0.06),
+      inset 0 1px 0 rgba(255,255,255,0.95);
+    transition: all 0.15s;
+  }
+  .lock-btn:hover { color: #a8842c; border-color: #a8842c; }
+
+  .input-wrap {
+    background: linear-gradient(180deg, #ede7d6 0%, #f0eadb 100%);
+    border-radius: 12px; padding: 4px;
+    box-shadow:
+      inset 0 1px 2px rgba(80,60,20,0.08),
+      inset 0 2px 4px rgba(80,60,20,0.04),
+      0 1px 0 rgba(255, 255, 255, 0.8);
+    margin-bottom: 28px;
+  }
+  .input-inner {
+    background: #fefcf7; border-radius: 9px;
+    display: flex; align-items: center; padding: 0 4px 0 20px;
+    box-shadow: inset 0 1px 2px rgba(80,60,20,0.04);
+  }
+  .prompt {
+    font-family: 'Fraunces', serif; font-size: 20px; color: #a8842c;
+    font-style: italic; margin-right: 12px; font-weight: 500;
+  }
+  .input-field {
+    flex: 1; background: transparent; border: none; outline: none;
+    padding: 16px 0; font-size: 14px; color: #1a1612;
+    font-family: 'Inter Tight', sans-serif; font-weight: 400; letter-spacing: -0.1px;
+  }
+  .log-btn {
+    background: linear-gradient(180deg, #c19a3e 0%, #a8842c 100%);
+    color: #fefcf7; border: none; border-radius: 7px;
+    padding: 10px 20px; font-size: 10px; letter-spacing: 2.5px;
+    text-transform: uppercase; font-family: 'JetBrains Mono', monospace;
+    font-weight: 500; cursor: pointer; margin: 4px;
+    box-shadow:
+      0 1px 1px rgba(80,60,20,0.15),
+      0 2px 4px rgba(168,132,44,0.3),
+      inset 0 1px 0 rgba(255,255,255,0.4),
+      inset 0 -1px 0 rgba(80,60,20,0.15);
+    transition: transform 0.1s;
+  }
+  .log-btn:hover { transform: translateY(-1px); }
+  .log-btn:active { transform: translateY(1px); }
+  .log-btn:disabled { opacity: 0.5; cursor: wait; }
+
+  .filters { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+  .filter {
+    padding: 9px 18px; border-radius: 8px; font-size: 10px;
+    letter-spacing: 2px; text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace; font-weight: 500;
+    cursor: pointer; border: none;
+    background: linear-gradient(180deg, #fefcf7 0%, #f5f0e2 100%);
+    color: #6b6558;
+    box-shadow:
+      0 1px 1px rgba(80, 60, 20, 0.06),
+      0 2px 4px rgba(80, 60, 20, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 0.95),
+      inset 0 -1px 0 rgba(80, 60, 20, 0.04);
+  }
+  .filter.active {
+    background: linear-gradient(180deg, #2a2520 0%, #1a1612 100%);
+    color: #f5f1e8;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.5);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+  }
+  .card {
+    background: linear-gradient(180deg, #fefcf7 0%, #f8f3e8 100%);
+    border-radius: 14px; padding: 22px; cursor: pointer;
+    box-shadow:
+      0 0.5px 1px rgba(80, 60, 20, 0.04),
+      0 2px 4px rgba(80, 60, 20, 0.04),
+      0 8px 16px rgba(80, 60, 20, 0.04),
+      0 24px 48px rgba(80, 60, 20, 0.03),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(168, 132, 44, 0.08);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative; overflow: hidden;
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 1px 2px rgba(80, 60, 20, 0.06),
+      0 4px 8px rgba(80, 60, 20, 0.06),
+      0 12px 24px rgba(80, 60, 20, 0.06),
+      0 32px 64px rgba(80, 60, 20, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 1);
+  }
+  .accent { position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .accent-Career { background: linear-gradient(90deg, #a8842c, #a8842c88); }
+  .accent-Academic { background: linear-gradient(90deg, #1d2d4a, #1d2d4a88); }
+  .accent-Creative { background: linear-gradient(90deg, #6b3a5e, #6b3a5e88); }
+  .accent-Tech { background: linear-gradient(90deg, #2d5e5e, #2d5e5e88); }
+  .accent-Other { background: linear-gradient(90deg, #6b6558, #6b655888); }
+
+  .card-top {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 14px; margin-top: 4px;
+  }
+  .category {
+    font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace; font-weight: 500;
+  }
+  .cat-Career { color: #a8842c; }
+  .cat-Academic { color: #1d2d4a; }
+  .cat-Creative { color: #6b3a5e; }
+  .cat-Tech { color: #2d5e5e; }
+  .cat-Other { color: #6b6558; }
+
+  .status-pill {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(0,0,0,0.03); padding: 4px 10px; border-radius: 20px;
+    box-shadow: inset 0 1px 1px rgba(80,60,20,0.05);
+  }
+  .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .dot-NotStarted { background: #a8a399; box-shadow: 0 0 0 2px #a8a39922; }
+  .dot-InProgress { background: #1d2d4a; box-shadow: 0 0 0 2px #1d2d4a22; }
+  .dot-Done { background: #3d6b3d; box-shadow: 0 0 0 2px #3d6b3d22; }
+  .dot-Stalled { background: #8b3a3a; box-shadow: 0 0 0 2px #8b3a3a22; }
+  .status-text {
+    font-size: 9px; color: #6b6558; letter-spacing: 1px;
+    text-transform: uppercase; font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+  }
+
+  .card-title {
+    font-family: 'Fraunces', serif; font-size: 18px; font-weight: 500;
+    color: #1a1612; line-height: 1.35; margin-bottom: 16px;
+    letter-spacing: -0.3px; font-variation-settings: 'opsz' 24;
+  }
+
+  .meta { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip {
+    font-size: 9px; color: #6b6558; letter-spacing: 1.5px;
+    background: linear-gradient(180deg, #f5f0e2 0%, #ede7d6 100%);
+    padding: 5px 10px; border-radius: 5px; text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace; font-weight: 500;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.7), 0 1px 0 rgba(80,60,20,0.04);
+  }
+
+  .expansion {
+    margin-top: 18px; padding-top: 16px;
+    border-top: 1px dashed rgba(168, 132, 44, 0.25);
+  }
+  .update {
+    font-size: 12px; color: #4a4540; line-height: 1.6;
+    padding-left: 12px; border-left: 2px solid #a8842c;
+    font-style: italic; font-family: 'Fraunces', serif;
+    margin-bottom: 8px;
+  }
+
+  .actions { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+  .action-btn {
+    flex: 1; min-width: 80px;
+    background: linear-gradient(180deg, #fefcf7 0%, #f5f0e2 100%);
+    border: 1px solid rgba(168, 132, 44, 0.15);
+    border-radius: 7px; padding: 8px 10px;
+    font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace; font-weight: 500;
+    color: #6b6558; cursor: pointer;
+    box-shadow:
+      0 1px 1px rgba(80,60,20,0.04),
+      inset 0 1px 0 rgba(255,255,255,0.8);
+  }
+  .action-btn:hover { border-color: #a8842c; color: #1a1612; }
+  .action-btn.delete:hover { border-color: #8b3a3a; color: #8b3a3a; }
+
+  .update-input {
+    width: 100%; margin-top: 10px;
+    background: #fefcf7; border: 1px solid rgba(168, 132, 44, 0.2);
+    border-radius: 7px; padding: 10px 12px;
+    font-size: 12px; font-family: 'Inter Tight', sans-serif;
+    color: #1a1612; outline: none;
+    box-shadow: inset 0 1px 2px rgba(80,60,20,0.04);
+  }
+  .update-input:focus { border-color: #a8842c; }
+
+  .empty {
+    text-align: center; padding: 80px 20px;
+    font-family: 'Fraunces', serif; font-style: italic;
+    color: #8b8478; font-size: 16px;
+  }
+  .loader {
+    display: inline-block; width: 16px; height: 16px;
+    border: 2px solid rgba(168, 132, 44, 0.2);
+    border-top-color: #a8842c; border-radius: 50%;
+    animation: spin 0.8s linear infinite; vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .toast {
+    position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(100px);
+    background: #1a1612; color: #f5f1e8;
+    padding: 12px 20px; border-radius: 8px; font-size: 12px;
+    font-family: 'JetBrains Mono', monospace; letter-spacing: 1px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease; z-index: 100;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  .footer {
+    margin-top: 48px; padding-top: 24px;
+    border-top: 1px solid rgba(168, 132, 44, 0.15);
+    text-align: center; font-size: 9px; letter-spacing: 4px;
+    color: #a8a399; text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  @media (max-width: 600px) {
+    .container { padding: 20px 16px; }
+    .title { font-size: 32px; }
+    .header { flex-direction: column; align-items: stretch; }
+    .header-right { justify-content: space-between; }
+  }
+</style>
+</head>
+<body>
+<div class="grain"></div>
+
+<!-- Password Gate -->
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <div class="gate-icon">⌬</div>
+    <div class="gate-eyebrow">— Restricted</div>
+    <div class="gate-title">The <em>Ledger</em></div>
+    <div class="gate-sub">Enter your key to continue.</div>
+
+    <div class="gate-input-wrap">
+      <input type="password" id="gateInput" class="gate-input" placeholder="••••••••••••" autocomplete="off" />
+    </div>
+    <button id="gateBtn" class="gate-btn">Unlock ↵</button>
+    <div class="gate-error" id="gateError"></div>
+
+    <div class="gate-hint">
+      The key was set when you deployed your script.<br>
+      Nothing is stored. Type it each session, on any browser.
+    </div>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="container">
+
+  <header class="header">
+    <div>
+      <div class="eyebrow">— CEO Gyasi · Est. 2026</div>
+      <div class="title">The <em>Ledger</em></div>
+      <div class="tagline">Plans logged. Progress kept. Nothing forgotten.</div>
+    </div>
+    <div class="header-right">
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-label">Active</div>
+          <div class="stat-value stat-active" id="activeCount">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Done</div>
+          <div class="stat-value stat-done" id="doneCount">—</div>
+        </div>
+      </div>
+      <button class="lock-btn" id="lockBtn" title="Lock the ledger">⌬</button>
+    </div>
+  </header>
+
+  <div class="input-wrap">
+    <div class="input-inner">
+      <div class="prompt">›</div>
+      <input id="planInput" class="input-field" placeholder="Type anything. The page will sort it." />
+      <button id="logBtn" class="log-btn">Log ↵</button>
+    </div>
+  </div>
+
+  <div class="filters" id="filters"></div>
+
+  <div class="grid" id="grid">
+    <div class="empty">Unlock to see your plans.</div>
+  </div>
+
+  <div class="footer">✦ EON · A Personal Ledger ✦</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ============== CONFIG ==============
+  // Paste your Apps Script Web App URL here after deployment.
+  // It will look like: https://script.google.com/macros/s/AKfycb.../exec
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwy1r2Qpx_AYCvG-k0HSuSJzjTy0CrGWGQrRB_at7jqzPij7379vsFdXZZg5SZ2MD_8yA/exec";
+  // ====================================
+
+  const CATEGORIES = ["All", "Career", "Academic", "Creative", "Tech", "Other"];
+
+  let plans = [];
+  let activeFilter = "All";
+  let expandedId = null;
+  let secret = ""; // session-only, in-memory
+
+  // DOM refs
+  const gate = document.getElementById("gate");
+  const gateInput = document.getElementById("gateInput");
+  const gateBtn = document.getElementById("gateBtn");
+  const gateError = document.getElementById("gateError");
+  const lockBtn = document.getElementById("lockBtn");
+  const grid = document.getElementById("grid");
+  const filtersEl = document.getElementById("filters");
+  const input = document.getElementById("planInput");
+  const logBtn = document.getElementById("logBtn");
+  const toastEl = document.getElementById("toast");
+
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    setTimeout(() => toastEl.classList.remove("show"), 2400);
+  }
+
+  function statusClass(s) { return "dot-" + s.replace(/\s+/g, ""); }
+
+  function escapeHtml(str) {
+    return String(str ?? "").replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
+  }
+
+  function renderFilters() {
+    filtersEl.innerHTML = CATEGORIES.map(c =>
+      `<button class="filter ${c === activeFilter ? 'active' : ''}" data-cat="${c}">${c}</button>`
+    ).join("");
+    filtersEl.querySelectorAll(".filter").forEach(btn => {
+      btn.onclick = () => { activeFilter = btn.dataset.cat; render(); };
+    });
+  }
+
+  function renderCards() {
+    const filtered = activeFilter === "All" ? plans : plans.filter(p => p.category === activeFilter);
+
+    if (!filtered.length) {
+      grid.innerHTML = `<div class="empty">No plans here yet. Type something above.</div>`;
+      return;
+    }
+
+    grid.innerHTML = filtered.map(p => {
+      const cat = CATEGORIES.includes(p.category) ? p.category : "Other";
+      const isExpanded = expandedId === p.id;
+      const updates = (p.updates || []).map(u =>
+        `<div class="update">"${escapeHtml(u)}"</div>`
+      ).join("");
+
+      return `
+        <div class="card" data-id="${p.id}">
+          <div class="accent accent-${cat}"></div>
+          <div class="card-top">
+            <span class="category cat-${cat}">${cat}</span>
+            <div class="status-pill">
+              <div class="dot ${statusClass(p.status)}"></div>
+              <span class="status-text">${p.status}</span>
+            </div>
+          </div>
+          <div class="card-title">${escapeHtml(p.title)}</div>
+          <div class="meta">
+            <div class="chip">${p.priority}</div>
+            ${p.deadline ? `<div class="chip">${p.deadline}</div>` : ''}
+          </div>
+          ${isExpanded ? `
+            <div class="expansion">
+              ${updates || '<div class="update" style="color:#8b8478">No updates yet.</div>'}
+              <input class="update-input" data-id="${p.id}" placeholder="Add an update… (press Enter)" />
+              <div class="actions">
+                <button class="action-btn" data-act="status" data-id="${p.id}">Cycle Status</button>
+                <button class="action-btn delete" data-act="delete" data-id="${p.id}">Delete</button>
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }).join("");
+
+    grid.querySelectorAll(".card").forEach(c => {
+      c.onclick = (e) => {
+        if (e.target.closest(".action-btn") || e.target.closest(".update-input")) return;
+        const id = c.dataset.id;
+        expandedId = expandedId === id ? null : id;
+        renderCards();
+      };
+    });
+
+    grid.querySelectorAll(".action-btn").forEach(b => {
+      b.onclick = (e) => {
+        e.stopPropagation();
+        const id = b.dataset.id;
+        const act = b.dataset.act;
+        if (act === "status") cycleStatus(id);
+        if (act === "delete") deletePlan(id);
+      };
+    });
+
+    grid.querySelectorAll(".update-input").forEach(i => {
+      i.onclick = (e) => e.stopPropagation();
+      i.onkeydown = (e) => {
+        if (e.key === "Enter" && i.value.trim()) {
+          addUpdate(i.dataset.id, i.value.trim());
+          i.value = "";
+        }
+      };
+    });
+  }
+
+  function renderStats() {
+    document.getElementById("activeCount").textContent =
+      plans.filter(p => p.status !== "Done").length;
+    document.getElementById("doneCount").textContent =
+      plans.filter(p => p.status === "Done").length;
+  }
+
+  function render() {
+    renderFilters();
+    renderCards();
+    renderStats();
+  }
+
+  async function api(action, payload = {}) {
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action, secret, ...payload }),
+    });
+    return res.json();
+  }
+
+  async function loadPlans() {
+    try {
+      const url = APPS_SCRIPT_URL + "?secret=" + encodeURIComponent(secret);
+      const res = await fetch(url);
+      const data = await res.json();
+      if (data.error === "Unauthorized") return false;
+      plans = (data.plans || []).reverse();
+      render();
+      return true;
+    } catch (err) {
+      grid.innerHTML = `<div class="empty">Could not reach the ledger.<br>Check your APPS_SCRIPT_URL.</div>`;
+      return false;
+    }
+  }
+
+  async function createPlan() {
+    const text = input.value.trim();
+    if (!text) return;
+    logBtn.disabled = true;
+    logBtn.innerHTML = '<span class="loader"></span>';
+    try {
+      const data = await api("create", { text });
+      if (data.plan) {
+        plans.unshift(data.plan);
+        input.value = "";
+        render();
+        toast("Logged.");
+      } else if (data.error === "Unauthorized") {
+        lockOut();
+      } else {
+        toast("Failed to log.");
+      }
+    } catch (err) {
+      toast("Error: " + err.message);
+    } finally {
+      logBtn.disabled = false;
+      logBtn.innerHTML = "Log ↵";
+    }
+  }
+
+  const STATUS_CYCLE = ["Not Started", "In Progress", "Done", "Stalled"];
+  async function cycleStatus(id) {
+    const plan = plans.find(p => p.id === id);
+    if (!plan) return;
+    const next = STATUS_CYCLE[(STATUS_CYCLE.indexOf(plan.status) + 1) % STATUS_CYCLE.length];
+    plan.status = next;
+    render();
+    await api("update", { id, status: next });
+    toast("Status: " + next);
+  }
+
+  async function addUpdate(id, note) {
+    const plan = plans.find(p => p.id === id);
+    if (!plan) return;
+    plan.updates = plan.updates || [];
+    plan.updates.unshift(note);
+    render();
+    await api("addUpdate", { id, note });
+    toast("Update saved.");
+  }
+
+  async function deletePlan(id) {
+    if (!confirm("Delete this plan? Cannot be undone.")) return;
+    plans = plans.filter(p => p.id !== id);
+    expandedId = null;
+    render();
+    await api("delete", { id });
+    toast("Deleted.");
+  }
+
+  // ============== AUTH FLOW ==============
+
+  async function tryUnlock(candidate) {
+    const url = APPS_SCRIPT_URL + "?secret=" + encodeURIComponent(candidate);
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      return !data.error;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  async function handleUnlock() {
+    const val = gateInput.value.trim();
+    if (!val) return;
+    gateBtn.disabled = true;
+    gateBtn.innerHTML = '<span class="loader"></span>';
+    gateError.textContent = "";
+
+    const ok = await tryUnlock(val);
+    if (ok) {
+      secret = val;
+      gate.classList.add("hidden");
+      await loadPlans();
+    } else {
+      gateError.textContent = "Wrong key. Try again.";
+      gateInput.value = "";
+      gateInput.focus();
+    }
+    gateBtn.disabled = false;
+    gateBtn.innerHTML = "Unlock ↵";
+  }
+
+  function lockOut() {
+    secret = "";
+    plans = [];
+    expandedId = null;
+    gate.classList.remove("hidden");
+    gateInput.value = "";
+    gateInput.focus();
+    grid.innerHTML = `<div class="empty">Unlock to see your plans.</div>`;
+    document.getElementById("activeCount").textContent = "—";
+    document.getElementById("doneCount").textContent = "—";
+    toast("Locked.");
+  }
+
+  gateBtn.onclick = handleUnlock;
+  gateInput.onkeydown = (e) => { if (e.key === "Enter") handleUnlock(); };
+  lockBtn.onclick = lockOut;
+
+  logBtn.onclick = createPlan;
+  input.onkeydown = (e) => { if (e.key === "Enter") createPlan(); };
+
+  // Boot — always show gate, focus input
+  gateInput.focus();
+</script>
+</body>
+</html>
